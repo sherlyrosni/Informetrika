@@ -1,0 +1,49 @@
+﻿id,tahun,jurnal,penulis,kata_kunci,metode,sitasi
+PUB-001,2020,Jurnal Perpustakaan A,Rina Saputra,perpustakaan digital,Survei,3
+PUB-002,2021,Jurnal Digital D,Nadia Larasati,temu kembali,Studi kasus,10
+PUB-003,2022,Jurnal Informasi B,Andi Prakoso,akses terbuka,Analisis dokumen,17
+PUB-004,2023,Jurnal Data E,Lita Kurnia,perpustakaan digital,Bibliometrika,24
+PUB-005,2024,Jurnal Literasi C,Bima Nugroho,temu kembali,Survei,4
+PUB-006,2025,Jurnal Perpustakaan A,Dewi Rahmani,metadata,Studi kasus,11
+PUB-007,2020,Jurnal Data E,Rafi Wijaya,literasi informasi,Analisis dokumen,18
+PUB-008,2022,Jurnal Literasi C,Sari Wulandari,bibliometrika,Bibliometrika,25
+PUB-009,2023,Jurnal Perpustakaan A,Dewi Rahmani,metadata,Survei,5
+PUB-010,2024,Jurnal Digital D,Rafi Wijaya,literasi informasi,Analisis dokumen,12
+PUB-011,2025,Jurnal Informasi B,Sari Wulandari,akses terbuka,Bibliometrika,19
+PUB-012,2020,Jurnal Data E,Rina Saputra,perpustakaan digital,Survei,26
+PUB-013,2021,Jurnal Digital D,Nadia Larasati,temu kembali,Studi kasus,6
+PUB-014,2022,Jurnal Informasi B,Andi Prakoso,akses terbuka,Analisis dokumen,13
+PUB-015,2024,Jurnal Data E,Lita Kurnia,perpustakaan digital,Bibliometrika,20
+PUB-016,2025,Jurnal Literasi C,Bima Nugroho,bibliometrika,Survei,0
+PUB-017,2020,Jurnal Perpustakaan A,Andi Prakoso,metadata,Studi kasus,7
+PUB-018,2021,Jurnal Digital D,Lita Kurnia,literasi informasi,Analisis dokumen,14
+PUB-019,2022,Jurnal Literasi C,Bima Nugroho,bibliometrika,Survei,21
+PUB-020,2023,Jurnal Perpustakaan A,Dewi Rahmani,metadata,Studi kasus,1
+PUB-021,2024,Jurnal Digital D,Rafi Wijaya,temu kembali,Analisis dokumen,8
+PUB-022,2020,Jurnal Informasi B,Sari Wulandari,akses terbuka,Bibliometrika,15
+PUB-023,2021,Jurnal Data E,Rina Saputra,perpustakaan digital,Survei,22
+PUB-024,2022,Jurnal Literasi C,Nadia Larasati,temu kembali,Studi kasus,2
+PUB-025,2023,Jurnal Informasi B,Sari Wulandari,akses terbuka,Analisis dokumen,9
+PUB-026,2024,Jurnal Data E,Rina Saputra,literasi informasi,Bibliometrika,16
+PUB-027,2025,Jurnal Literasi C,Nadia Larasati,bibliometrika,Survei,23
+PUB-028,2020,Jurnal Perpustakaan A,Andi Prakoso,metadata,Analisis dokumen,3
+PUB-029,2022,Jurnal Digital D,Lita Kurnia,literasi informasi,Bibliometrika,10
+PUB-030,2023,Jurnal Informasi B,Bima Nugroho,bibliometrika,Survei,17
+PUB-031,2024,Jurnal Perpustakaan A,Dewi Rahmani,perpustakaan digital,Studi kasus,24
+PUB-032,2025,Jurnal Digital D,Rafi Wijaya,temu kembali,Analisis dokumen,4
+PUB-033,2020,Jurnal Informasi B,Bima Nugroho,akses terbuka,Bibliometrika,11
+PUB-034,2021,Jurnal Data E,Dewi Rahmani,perpustakaan digital,Survei,18
+PUB-035,2022,Jurnal Literasi C,Rafi Wijaya,temu kembali,Studi kasus,25
+PUB-036,2024,Jurnal Perpustakaan A,Sari Wulandari,metadata,Analisis dokumen,5
+PUB-037,2025,Jurnal Data E,Rina Saputra,literasi informasi,Survei,12
+PUB-038,2020,Jurnal Literasi C,Nadia Larasati,bibliometrika,Studi kasus,19
+PUB-039,2021,Jurnal Perpustakaan A,Andi Prakoso,metadata,Analisis dokumen,26
+PUB-040,2022,Jurnal Digital D,Lita Kurnia,literasi informasi,Bibliometrika,6
+PUB-041,2023,Jurnal Informasi B,Nadia Larasati,akses terbuka,Survei,13
+PUB-042,2024,Jurnal Data E,Andi Prakoso,perpustakaan digital,Studi kasus,20
+PUB-043,2020,Jurnal Digital D,Lita Kurnia,temu kembali,Analisis dokumen,0
+PUB-044,2021,Jurnal Informasi B,Bima Nugroho,akses terbuka,Bibliometrika,7
+PUB-045,2022,Jurnal Data E,Dewi Rahmani,perpustakaan digital,Survei,14
+PUB-046,2023,Jurnal Literasi C,Rafi Wijaya,bibliometrika,Analisis dokumen,21
+PUB-047,2024,Jurnal Perpustakaan A,Sari Wulandari,metadata,Bibliometrika,1
+PUB-048,2025,Jurnal Digital D,Rina Saputra,literasi informasi,Survei,8

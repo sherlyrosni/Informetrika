@@ -1,0 +1,2835 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173b32">
+  <meta name="description" content="RuangData: laboratorium Informetrika selama 16 pertemuan. Pelajari data, visualisasi, Bradford, Lotka, Zipf, sitasi, dan altmetrika secara interaktif.">
+  <title>RuangData — Laboratorium Informetrika 16 Pertemuan</title>
+  
+  <style>
+:root{
+  color-scheme:light; --bg:#f6f8f4; --paper:#ffffff; --ink:#1e322a; --muted:#687970; --light:#edf3ec;
+  --green:#214d3e;--deep:#173b32;--mid:#547c66;--mint:#dcebe0;--gold:#e1be78;
+  --stroke:#e0e9df;--shadow:0 15px 44px rgba(26,61,42,.065);--radius:16px;
+  font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.52}
+a{color:inherit;text-decoration:none}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #d5ae62;outline-offset:3px}
+::selection{background:#d8e8d9}
+.app-shell{min-height:100vh;display:flex}
+.sidebar{width:258px;position:fixed;left:0;top:0;bottom:0;display:flex;flex-direction:column;background:var(--paper);border-right:1px solid var(--stroke);padding:24px 16px 19px;z-index:40;overflow-y:auto}
+.brand{display:flex;gap:12px;align-items:center;padding:0 10px 26px}
+.brand-logo{height:44px;width:44px;border-radius:13px;background:var(--green);display:grid;place-items:center;color:white;font-weight:900;font-size:24px;letter-spacing:-2px;box-shadow:0 7px 12px rgba(30,86,59,.14)}
+.brand-logo span{color:#f4d494}
+.brand b{display:block;letter-spacing:-.7px;font-size:19px;line-height:1.1}
+.brand small{color:#83928a;font-size:10.8px;font-weight:600}
+.side-label{text-transform:uppercase;letter-spacing:1.8px;color:#9caaa1;font-weight:800;font-size:10px;margin:9px 14px 12px}
+.side-nav{display:grid;gap:4px}
+.nav-link{border:0;background:transparent;color:#65776c;display:flex;align-items:center;gap:12px;text-align:left;padding:12px 13px;width:100%;border-radius:11px;font-weight:650;font-size:12.7px;transition:.15s}
+.nav-link svg{width:18px;height:18px;flex:none}
+.nav-link:hover{background:#f2f7f2;color:var(--green)}
+.nav-link.active{color:#245e45;background:#eaf2e9}
+.side-rule{border:0;border-top:1px solid var(--stroke);width:100%;margin:18px 0 9px}
+.side-course{margin:18px 4px 16px;border:1px solid var(--stroke);border-radius:13px;padding:14px;background:#fbfdfb}
+.side-course .tag{font-size:10px;color:#8b998f;font-weight:750;letter-spacing:1.2px}
+.side-course strong{display:block;font-size:12.5px;margin:5px 0 2px}
+.side-course p{color:var(--muted);font-size:11px;margin:0}
+.tiny-progress{height:6px;background:#e4ede6;border-radius:20px;overflow:hidden;margin-top:12px}
+.tiny-progress span{display:block;height:100%;background:#5e946d;border-radius:20px}
+.sidebar-bottom{margin-top:auto;color:#8b988d;font-size:10.5px;padding:8px 9px 0}
+.main-area{min-width:0;flex:1;margin-left:258px}
+.topbar{height:77px;background:rgba(255,255,255,.95);border-bottom:1px solid var(--stroke);display:flex;align-items:center;justify-content:space-between;padding:0 43px;gap:16px;position:sticky;top:0;z-index:20;backdrop-filter:blur(9px)}
+.crumb{font-weight:650;font-size:12.5px;color:#5e7065;display:flex;gap:12px;align-items:center;min-width:0}
+.crumb i{font-style:normal;color:#becbc2}
+.top-actions{display:flex;gap:12px;align-items:center}
+.top-chip{border:1px solid #e5ebe4;border-radius:99px;background:#fafcf9;color:#65806f;font-size:11px;font-weight:700;padding:8px 13px}
+.user-chip{height:35px;width:35px;border-radius:100%;display:grid;place-items:center;background:#e4ede0;color:var(--green);font-weight:850;border:0}
+.mobile-toggle{display:none;border:1px solid var(--stroke);background:white;border-radius:10px;width:39px;height:39px;align-items:center;justify-content:center}
+.content{max-width:1370px;margin:0 auto;padding:38px 44px 90px}
+.eyebrow{color:#3d7654;font-size:10.7px;font-weight:850;text-transform:uppercase;letter-spacing:1.65px}
+h1,h2,h3,h4,p{margin-top:0}h1,h2,h3,h4{line-height:1.25;letter-spacing:-.75px}
+h1{font-size:31px;font-weight:830;margin:8px 0 12px}h2{font-size:20px;font-weight:800}h3{font-size:15px;font-weight:800;letter-spacing:-.28px}
+.page-heading{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:0 0 23px}
+.page-heading p{color:var(--muted);margin:0;max-width:780px;font-size:13px}
+.btn{padding:12px 17px;border-radius:10px;border:1px solid #bccfc0;color:var(--green);background:white;font-size:12px;font-weight:800;display:inline-flex;gap:9px;align-items:center;justify-content:center;text-align:center;line-height:1.2;transition:.18s}
+.btn svg{width:16px;height:16px}.btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(18,55,38,.06)}
+.btn.primary{background:var(--green);border-color:var(--green);color:white}.btn.primary:hover{background:var(--deep)}
+.btn.light{background:#eff6ef;border-color:#dfebdf}.btn.ghost{border-color:#e0e9df;color:var(--muted)}
+.btn.warn{border-color:#e3c2aa;background:#fff8f3;color:#985b36}.btn.mini{padding:9px 11px;font-size:11px;border-radius:9px}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.card{background:var(--paper);border:1px solid var(--stroke);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.pad{padding:24px}.card-head{padding:21px 23px 0;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.card-head h2,.card-head h3{margin:0}.card-body{padding:20px 23px 24px}
+.hero{background:linear-gradient(110deg,#193e32 0%,#204a3d 64%,#315b44 100%);color:white;border-radius:20px;min-height:259px;padding:38px 41px;position:relative;overflow:hidden;display:flex;align-items:center}
+.hero .herotxt{position:relative;z-index:2;max-width:600px}
+.hero h1{color:white;font-size:35px;max-width:550px;line-height:1.2;margin:11px 0}
+.hero p{color:#ccded0;font-size:13.2px;max-width:535px;margin-bottom:24px}
+.hero .hero-kicker{color:#d6dfbb;font-size:10.5px;letter-spacing:1.7px;font-weight:850}
+.hero button{background:white;color:#214e3c;border-color:white}
+.hero .hero-art{position:absolute;right:-15px;top:0;width:43%;height:100%;opacity:.9}
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:18px 0 23px}
+.stat-card{padding:22px 21px}.stat-label{font-size:11px;color:#87978c;font-weight:650}.stat-number{font-size:28px;font-weight:850;letter-spacing:-1.3px;margin-top:12px}.stat-meta{font-size:10.5px;margin-top:3px;color:#5f9474}
+.grid-two{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(290px,1fr);gap:18px;margin-top:18px}
+.section-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 18px}
+.section-header h2{font-size:18px;margin:0}.section-header p{color:var(--muted);font-size:11.5px;margin:3px 0 0}
+.pill{display:inline-flex;align-items:center;gap:5px;background:#e9f4ea;color:#3b7450;border-radius:30px;padding:5px 10px;font-size:10px;font-weight:800}
+.pill.gold{background:#fff4e1;color:#aa7935}.pill.gray{background:#eef2ed;color:#667567}
+.progress-track{height:9px;border-radius:30px;background:#e7eee6;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#437858,#9dbd86);border-radius:30px;transition:width .2s}
+.week-list{display:grid;gap:10px}
+.week-row{width:100%;background:white;border:1px solid var(--stroke);padding:14px 16px;border-radius:11px;text-align:left;display:flex;align-items:center;gap:13px;transition:.16s}
+.week-row:hover{border-color:#9abb9c;background:#fcfefc}
+.week-num{width:40px;height:40px;flex:none;border-radius:11px;background:#eaf3eb;color:#35654b;font-size:13px;font-weight:900;display:grid;place-items:center}
+.week-row strong{font-size:12.5px;display:block;line-height:1.4}.week-row small{display:block;color:#8b9a8c;font-size:10px;margin-top:3px}
+.week-row .right{margin-left:auto;flex:none}
+.week-row .right svg{width:16px;height:16px;color:#82978a}
+.program-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.program-card{padding:22px;display:flex;flex-direction:column;min-height:205px}
+.program-card .number{font-weight:900;color:#43765a;font-size:12px}.program-card h3{margin:13px 0 8px}.program-card p{font-size:11.5px;color:#7d8e82;line-height:1.65;flex:1}
+.program-card footer{display:flex;justify-content:space-between;align-items:center}
+.program-card.exam{border-color:#ecdcbc;background:linear-gradient(160deg,#fff,#fffaf0)}
+.notice{background:#e9f2e8;border:1px solid #d8e6d5;color:#4d6e54;border-radius:12px;padding:17px 19px;font-size:12.5px;margin:15px 0}
+.notice.gold{background:#fff8eb;border-color:#f1e2c3;color:#8b6735}
+.notice p:last-child{margin-bottom:0}
+.cols-two{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,1fr);gap:20px}
+.kicker-line{border-left:4px solid #a5c4a5;padding:12px 17px;background:#f7faf6;border-radius:0 10px 10px 0;color:#526a58;font-size:12.5px}
+.objective-list{padding-left:18px;color:#586f5e;font-size:12.6px;line-height:1.9}
+.lesson-sections{display:grid;gap:15px}
+.lesson-section{border-bottom:1px solid #eef2eb;padding-bottom:10px}.lesson-section:last-child{border-bottom:none;padding-bottom:0}.lesson-section h3{color:#285943;margin-bottom:8px}.lesson-section p{color:#637468;font-size:12.7px;line-height:1.85;margin:0}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+.step{border:1px solid #e8efe8;background:#fbfdfa;border-radius:11px;padding:13px 14px;display:flex;gap:12px;align-items:flex-start;color:#5b6e60;font-size:12.3px;line-height:1.65}
+.step input{margin-top:5px;accent-color:var(--green);width:16px;height:16px;flex:none}.step.checked .step-text{text-decoration:line-through;color:#9ba69b}
+.assignment{background:#f1f6ee;border:1px solid #dce8d9;border-radius:13px;padding:18px 20px}
+.assignment strong{color:#315a40;font-size:12px}.assignment p{font-size:12.3px;color:#607365;margin:6px 0}.simple-list{padding-left:17px;font-size:12.2px;color:#607365;line-height:1.95}
+textarea,input[type="text"],input[type="number"],select{border:1px solid #d7e4d9;border-radius:9px;background:white;color:var(--ink);padding:11px 12px;outline:none}
+textarea:focus,input:focus,select:focus{border-color:#87ac8c;box-shadow:0 0 0 3px #e2f1e4}
+textarea{width:100%;resize:vertical;min-height:116px;font-size:12.5px;line-height:1.8}
+.field-label{font-weight:800;font-size:11.5px;margin:0 0 7px;display:block;color:#506c57}
+.help{font-size:10.7px;color:#87978b;margin:7px 0 0}
+.quiz-question{border:1px solid var(--stroke);border-radius:12px;padding:17px;margin:13px 0;background:#fff}
+.quiz-question h3{font-size:12.8px;line-height:1.55;margin:0 0 14px;font-weight:780;letter-spacing:0}
+.quiz-choices{display:grid;gap:8px}
+.quiz-choice{border:1px solid #e2eae1;border-radius:9px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;font-size:11.9px;color:#536556;cursor:pointer;transition:.15s}
+.quiz-choice:hover{background:#f5faf4;border-color:#b7d1bc}.quiz-choice input{accent-color:var(--green);margin:4px 0 0;flex:none}
+.quiz-choice.correct{border-color:#9bc5a4;background:#eff8ef}.quiz-choice.wrong{border-color:#ebc3b3;background:#fff3f0}
+.quiz-feedback{border-left:3px solid #6eab7c;background:#f2f9f1;color:#497054;padding:11px 12px;margin-top:10px;font-size:11.6px;border-radius:0 8px 8px 0}
+.quiz-result{background:linear-gradient(110deg,#e9f4e9,#f6f9f1);border:1px solid #d2e7d3;border-radius:13px;padding:18px 20px;margin-top:15px}
+.quiz-result b{font-size:22px;color:#28533b}.quiz-result p{font-size:11.5px;color:#618069;margin:7px 0}
+.lab-toolbar{display:flex;align-items:end;gap:12px;flex-wrap:wrap}.control{display:flex;flex-direction:column;gap:6px;min-width:150px;flex:1}
+.control label{font-size:11px;font-weight:800;color:#5d7464}.control select,.control input{width:100%;font-size:12px;min-height:41px}
+.dataset-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.dataset-card{border:1px solid var(--stroke);background:white;border-radius:13px;padding:15px;text-align:left;min-height:125px;display:flex;flex-direction:column;gap:5px;transition:.17s}
+.dataset-card:hover,.dataset-card.active{border-color:#729e78;background:#f7fcf7}.dataset-card strong{font-size:12.5px}.dataset-card small{color:#829284;font-size:10.5px;line-height:1.5}.dataset-card .dataset-icon{background:#eaf3ea;color:#477257;border-radius:9px;width:32px;height:32px;display:grid;place-items:center}
+.data-table-wrap{overflow:auto;border:1px solid var(--stroke);border-radius:11px;background:white}
+table{width:100%;border-collapse:collapse;text-align:left;font-size:11.5px;min-width:490px}th{background:#f5f8f4;color:#6a7c70;font-weight:800;white-space:nowrap}td,th{border-bottom:1px solid #ebf0eb;padding:11px 13px}td{color:#4b6053;max-width:280px;overflow-wrap:anywhere}tr:last-child td{border-bottom:0}
+.graph-frame{height:310px;border:1px solid #e3ece3;border-radius:12px;background:linear-gradient(0deg,#fff,#fbfdfb);padding:10px 12px 2px}
+.graph-frame svg{width:100%;height:100%}
+.footnote{color:#879788;font-size:10.6px;margin-top:9px}
+.stat-inline{display:flex;flex-wrap:wrap;gap:11px}
+.stat-inline>span{background:#f1f6f0;border-radius:8px;padding:8px 11px;font-size:11px;color:#567563}
+.formula-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.formula-tab{border:1px solid #dce8df;border-radius:10px;background:white;color:#6f8073;padding:11px;font-size:11.5px;font-weight:800}
+.formula-tab.active{background:var(--green);color:white;border-color:var(--green)}
+.formula-output{margin-top:16px;border:1px solid #dfe9df;background:#f9fbf8;border-radius:12px;padding:20px;font-size:12.5px}
+.formula-big{font-size:25px;color:var(--green);font-weight:900;letter-spacing:-1px}
+.report-tile{background:white;border:1px solid #e5ece5;border-radius:13px;padding:18px}
+.progress-table{min-width:700px}.progress-table td:first-child{font-weight:700}
+.tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.tool-card{padding:24px}.tool-card h3{margin:10px 0 8px}.tool-card p{color:var(--muted);font-size:12px;line-height:1.7}
+.footer{border-top:1px solid var(--stroke);padding:25px 44px;color:#99a49b;font-size:10.5px;margin-top:5px;display:flex;gap:14px;justify-content:space-between}
+.toast{position:fixed;bottom:25px;right:25px;background:#193f32;color:white;border-radius:11px;padding:13px 18px;font-size:12.5px;box-shadow:0 14px 25px #123a2a30;z-index:80;max-width:350px}
+.modal-shade{position:fixed;inset:0;background:#1631278c;z-index:90;display:flex;align-items:center;justify-content:center;padding:18px}
+.modal{width:min(510px,100%);padding:28px;background:white;border-radius:17px;box-shadow:0 24px 100px #0820183b}.modal h2{margin-bottom:10px}.modal p{color:#687c6f;font-size:12.5px}
+.print-only{display:none}
+@media(max-width:1180px){.content{padding:29px 27px 80px}.topbar{padding:0 27px}.sidebar{width:230px}.main-area{margin-left:230px}.hero .hero-art{width:36%}.program-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-two,.cols-two{grid-template-columns:1fr}}
+@media(max-width:760px){.sidebar{transform:translateX(-103%);width:min(280px,90vw);box-shadow:0 0 0 transparent;transition:transform .22s}.sidebar.show{transform:translateX(0);box-shadow:0 0 0 900px #08201560}.main-area{margin-left:0}.mobile-toggle{display:flex}.content{padding:24px 17px 60px}.topbar{padding:0 17px;height:64px}.top-chip{display:none}.hero{padding:28px 25px;min-height:270px}.hero h1{font-size:27px}.hero .hero-art{opacity:.26;width:70%}.page-heading{align-items:flex-start;flex-direction:column}.program-grid,.dataset-grid,.tool-grid{grid-template-columns:1fr}.grid-two,.cols-two{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,1fr);gap:9px}.stat-card{padding:17px}.stat-number{font-size:24px}.card-body,.pad{padding:19px}.formula-grid{grid-template-columns:repeat(2,1fr)}.footer{padding:22px;flex-direction:column}.user-chip{display:none}}
+@media(max-width:420px){.hero h1{font-size:24px}.btn-row .btn{flex:1}.stat-label{font-size:10px}}
+@media print{.sidebar,.topbar,.btn,.footer,.toast,.modal-shade{display:none!important}.main-area{margin:0}.content{max-width:none;padding:0}.print-only{display:block}.card{box-shadow:none;break-inside:avoid}.hero{background:white!important;color:black!important}.hero h1,.hero p{color:black!important}}
+
+  </style>
+
+
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <noscript>RuangData memerlukan JavaScript untuk menampilkan pertemuan, grafik, dan kuis. Aktifkan JavaScript di browser.</noscript>
+    <div class="load-screen">Membuka RuangData…</div>
+  </div>
+<script>
+/* Konten pembelajaran RuangData, 16 pertemuan. Semua data latihan adalah contoh/sintetis. */
+window.RUANGDATA_CONTENT = {
+  "course": "RuangData • Laboratorium Informetrika",
+  "version": "1.0.0",
+  "sessions": [
+    {
+      "no": 1,
+      "title": "Pengantar Informetrika dan Literasi Data",
+      "tag": "Orientasi & pretest",
+      "description": "Mengenali peran data dalam mengukur dan memahami aktivitas informasi. Mahasiswa membedakan fakta, indikator, dan interpretasi sebelum melakukan analisis.",
+      "objectives": [
+        "Menjelaskan perbedaan informetrika dan literasi data.",
+        "Mengenali observasi, variabel, indikator, dan kesimpulan.",
+        "Mengikuti asesmen awal sebagai pemetaan kemampuan."
+      ],
+      "sections": [
+        {
+          "title": "Apa yang diukur informetrika?",
+          "body": "Informetrika mempelajari pengukuran aspek informasi dan aktivitasnya. Data dapat berasal dari publikasi, pengguna informasi, koleksi, sitasi, dan interaksi digital."
+        },
+        {
+          "title": "Data tidak sama dengan kesimpulan",
+          "body": "Angka kunjungan perpustakaan adalah observasi. Menyimpulkan bahwa program promosi menyebabkan kenaikan kunjungan membutuhkan bukti tambahan."
+        },
+        {
+          "title": "Siklus literasi data",
+          "body": "Mulailah dari pertanyaan, kenali sumber dan kualitas data, olah secara tepat, visualisasikan, lalu tulis kesimpulan beserta batasannya."
+        }
+      ],
+      "steps": [
+        "Buka Laboratorium Data dan pilih dataset Kunjungan Perpustakaan.",
+        "Sebutkan dua variabel numerik dan satu variabel kategori.",
+        "Bandingkan grafik batang dan garis; jelaskan kapan keduanya digunakan.",
+        "Selesaikan asesmen awal, lalu catat hal yang paling ingin dipelajari."
+      ],
+      "assignment": "Tuliskan dua pertanyaan yang dapat dijawab dataset kunjungan dan satu pertanyaan yang belum bisa dijawab.",
+      "deliverable": "Catatan singkat (150–200 kata) dan hasil pretest.",
+      "criteria": [
+        "Pertanyaan dapat diukur dengan variabel tersedia",
+        "Tidak membuat klaim sebab-akibat tanpa bukti",
+        "Mencatat keterbatasan data"
+      ],
+      "quiz": [
+        {
+          "question": "Informetrika terutama berfokus pada …",
+          "options": [
+            "Merancang tata letak katalog",
+            "Mengukur fenomena informasi dan pola aktivitasnya",
+            "Memperbaiki perangkat keras",
+            "Membuat semua data menjadi rahasia"
+          ],
+          "correct": 1,
+          "explanation": "Informetrika menerapkan pendekatan pengukuran pada fenomena informasi."
+        },
+        {
+          "question": "Sebuah grafik menunjukkan kenaikan kunjungan. Kesimpulan yang paling tepat …",
+          "options": [
+            "Promosi pasti penyebab kenaikan",
+            "Kunjungan naik pada periode yang diamati",
+            "Kualitas pustakawan pasti meningkat",
+            "Seluruh mahasiswa makin rajin"
+          ],
+          "correct": 1,
+          "explanation": "Data tren menggambarkan perubahan, bukan sebabnya."
+        },
+        {
+          "question": "Variabel kategori pada data kunjungan adalah …",
+          "options": [
+            "Jumlah kunjungan",
+            "Tahun publikasi",
+            "Jenis pengguna",
+            "Total transaksi"
+          ],
+          "correct": 2,
+          "explanation": "Jenis pengguna berisi kategori seperti mahasiswa, dosen, atau umum."
+        },
+        {
+          "question": "Langkah pertama analisis data adalah …",
+          "options": [
+            "Memilih grafik terindah",
+            "Menentukan pertanyaan dan tujuan analisis",
+            "Menulis kesimpulan",
+            "Menghapus nilai yang tidak disukai"
+          ],
+          "correct": 1,
+          "explanation": "Pertanyaan menentukan data dan metode yang relevan."
+        }
+      ],
+      "tool": "explorer",
+      "reference": "",
+      "exam": false
+    },
+    {
+      "no": 2,
+      "title": "Dataset, Metadata, dan Komposisi Korpus",
+      "tag": "Dasar korpus",
+      "description": "Memahami korpus sebagai kumpulan rekaman yang dipilih menurut batas topik, periode, sumber, dan kriteria. Mengidentifikasi struktur metadata publikasi.",
+      "objectives": [
+        "Menguraikan cakupan dan unit analisis korpus.",
+        "Mengidentifikasi field metadata bibliografi.",
+        "Menyusun kriteria inklusi dan eksklusi yang dapat direplikasi."
+      ],
+      "sections": [
+        {
+          "title": "Korpus penelitian",
+          "body": "Korpus adalah himpunan dokumen atau rekaman yang dikumpulkan untuk tujuan analisis tertentu. Komposisi korpus menjelaskan sumber, tahun, bidang, bahasa, dan kriteria pemilihannya."
+        },
+        {
+          "title": "Unit analisis dan unit pengukuran",
+          "body": "Satu baris publikasi bukan selalu satu penulis. Untuk menganalisis produktivitas penulis, data perlu diurai menurut kepengarangan; untuk tren tahunan, gunakan satu baris per publikasi."
+        },
+        {
+          "title": "Metadata yang perlu dicek",
+          "body": "Judul, penulis, tahun, jurnal, DOI, kata kunci, dan jumlah sitasi mendukung jenis analisis berbeda. Ketidaklengkapan metadata memengaruhi hasil."
+        }
+      ],
+      "steps": [
+        "Pilih dataset Publikasi Ilmu Perpustakaan.",
+        "Identifikasi jumlah rekaman, kolom, dan rentang tahun.",
+        "Susun contoh kriteria inklusi/eksklusi.",
+        "Catat field yang belum lengkap atau rawan berbeda ejaan."
+      ],
+      "assignment": "Buat deskripsi komposisi korpus: tujuan, sumber, rentang waktu, unit analisis, dan keterbatasan.",
+      "deliverable": "Deskripsi korpus dan tabel ringkasan kolom.",
+      "criteria": [
+        "Cakupan data eksplisit",
+        "Unit analisis benar",
+        "Kriteria dapat diulang"
+      ],
+      "quiz": [
+        {
+          "question": "Komposisi korpus sebaiknya mencakup …",
+          "options": [
+            "Warna grafik dan logo",
+            "Sumber, rentang waktu, kriteria, dan jumlah rekaman",
+            "Nama laptop peneliti saja",
+            "Pendapat tanpa data"
+          ],
+          "correct": 1,
+          "explanation": "Komposisi korpus harus menggambarkan bagaimana himpunan data dibentuk."
+        },
+        {
+          "question": "Untuk menghitung jumlah artikel per tahun, unit analisis paling tepat adalah …",
+          "options": [
+            "Setiap kata",
+            "Setiap publikasi",
+            "Setiap penerbit",
+            "Setiap pengunjung"
+          ],
+          "correct": 1,
+          "explanation": "Satu rekaman publikasi dipetakan ke tahun terbitnya."
+        },
+        {
+          "question": "Contoh metadata bibliografi adalah …",
+          "options": [
+            "Kelembapan ruang",
+            "Judul, penulis, tahun, DOI",
+            "Warna rak",
+            "Ukuran ruangan"
+          ],
+          "correct": 1,
+          "explanation": "Keempat item itu merupakan atribut bibliografi."
+        },
+        {
+          "question": "Mengapa kriteria inklusi penting?",
+          "options": [
+            "Supaya hasil selalu besar",
+            "Supaya cakupan korpus transparan dan dapat direplikasi",
+            "Supaya grafik selalu naik",
+            "Supaya sitasi dihapus"
+          ],
+          "correct": 1,
+          "explanation": "Kriteria menjaga keterlacakan pemilihan data."
+        }
+      ],
+      "tool": "explorer",
+      "reference": "",
+      "exam": false
+    },
+    {
+      "no": 3,
+      "title": "Akuisisi Data Publikasi dan Etika",
+      "tag": "Sumber dan validasi",
+      "description": "Merencanakan penelusuran publikasi dan memeriksa asal data. Praktik dapat memanfaatkan Publish or Perish (PoP) secara terpisah sebelum data dianalisis di RuangData.",
+      "objectives": [
+        "Menentukan kata kunci penelusuran yang relevan.",
+        "Memeriksa kelayakan sumber dan konsistensi metadata.",
+        "Mengenali risiko privasi dan keterbatasan data sitasi."
+      ],
+      "sections": [
+        {
+          "title": "Strategi akuisisi",
+          "body": "Dokumentasikan kata kunci, sumber indeks, tanggal akses, batas tahun, dan jenis dokumen. Hasil PoP dapat berbeda menurut sumber serta kebijakan cakupan indeks."
+        },
+        {
+          "title": "Penapisan rekaman",
+          "body": "Periksa judul yang tidak relevan, duplikasi, DOI, tahun, dan jurnal. Jumlah hasil pencarian tidak sama dengan jumlah dokumen akhir korpus."
+        },
+        {
+          "title": "Etika",
+          "body": "Gunakan data publik yang diizinkan atau data simulasi. Jangan memasukkan identitas pribadi mahasiswa, nomor induk, maupun data sensitif ke repositori publik."
+        }
+      ],
+      "steps": [
+        "Rancang string pencarian dengan dua konsep dan operator Boolean.",
+        "Catat parameter untuk mengambil sekitar 30 rekaman melalui PoP bila tersedia.",
+        "Bandingkan dua rekaman dengan judul mirip; tentukan apakah duplikat.",
+        "Lakukan analisis awal memakai dataset sampel bila belum memiliki ekspor PoP."
+      ],
+      "assignment": "Susun log akuisisi data dan tabel 5 rekaman yang perlu diverifikasi.",
+      "deliverable": "Log pencarian (sumber, kata kunci, tanggal, batasan) dan tabel keputusan.",
+      "criteria": [
+        "Strategi pencarian relevan",
+        "Keputusan inklusi didukung alasan",
+        "Etika pengelolaan data diperhatikan"
+      ],
+      "quiz": [
+        {
+          "question": "Metadata sumber pencarian yang penting untuk direplikasi adalah …",
+          "options": [
+            "Warna tema aplikasi",
+            "Kata kunci, tanggal akses, basis data, dan batas tahun",
+            "Resolusi monitor",
+            "Nama folder gambar"
+          ],
+          "correct": 1,
+          "explanation": "Parameter pencarian menentukan hasil yang dapat diperiksa kembali."
+        },
+        {
+          "question": "Dua publikasi dengan judul sama tetapi DOI berbeda sebaiknya …",
+          "options": [
+            "Langsung digabung",
+            "Diperiksa metadata lengkap sebelum memutuskan duplikasi",
+            "Langsung dihapus semua",
+            "Dianggap selalu berbeda"
+          ],
+          "correct": 1,
+          "explanation": "Duplikasi perlu verifikasi, bukan asumsi."
+        },
+        {
+          "question": "Praktik yang aman saat mengunggah data ke GitHub adalah …",
+          "options": [
+            "Menyertakan NIM lengkap",
+            "Mengunggah kata sandi",
+            "Memakai data publik atau anonim yang diizinkan",
+            "Membagikan data rahasia"
+          ],
+          "correct": 2,
+          "explanation": "Repositori publik dapat diakses banyak orang."
+        },
+        {
+          "question": "Data PoP paling tepat dipahami sebagai …",
+          "options": [
+            "Hasil final yang tidak perlu diperiksa",
+            "Hasil pengambilan yang perlu verifikasi dan pembersihan",
+            "Bukti kualitas semua artikel",
+            "Daftar pasti seluruh publikasi dunia"
+          ],
+          "correct": 1,
+          "explanation": "Cakupan dan kualitas data indeks perlu diperiksa."
+        }
+      ],
+      "tool": "explorer",
+      "reference": "",
+      "exam": false
+    },
+    {
+      "no": 4,
+      "title": "Pembersihan dan Standardisasi Metadata",
+      "tag": "Data cleaning",
+      "description": "Memperbaiki duplikasi, perbedaan ejaan, data kosong, dan ketidakseragaman format agar penghitungan bibliometrik lebih andal.",
+      "objectives": [
+        "Mendeteksi tipe kesalahan metadata.",
+        "Menentukan aturan normalisasi dan penanganan missing value.",
+        "Membuat jejak keputusan cleaning yang transparan."
+      ],
+      "sections": [
+        {
+          "title": "Tipe masalah umum",
+          "body": "Penulis bisa ditulis sebagai A. Rahman atau Ahmad Rahman; jurnal dapat memiliki singkatan; DOI mungkin kosong. Menggabungkan entitas harus mempertimbangkan bukti."
+        },
+        {
+          "title": "Prosedur cleaning",
+          "body": "Inventarisasi kesalahan → tetapkan aturan → buat kolom hasil normalisasi → tinjau rekaman mencurigakan → simpan perubahan dalam log. Jangan menimpa data mentah secara permanen."
+        },
+        {
+          "title": "Konsekuensi analitik",
+          "body": "Duplikasi dapat membuat produktivitas, frekuensi kata, maupun sitasi tampak lebih tinggi dari kenyataan."
+        }
+      ],
+      "steps": [
+        "Gunakan dataset Publikasi Ilmu Perpustakaan.",
+        "Identifikasi nama penulis, jurnal, atau kata kunci yang berpotensi bervariasi.",
+        "Buat minimal empat aturan cleaning pada catatan kerja.",
+        "Bandingkan jumlah rekaman sebelum dan sesudah penapisan di spreadsheet."
+      ],
+      "assignment": "Buat mini-codebook aturan cleaning dengan contoh sebelum dan sesudah.",
+      "deliverable": "Tabel minimal empat aturan, contoh, dan alasan.",
+      "criteria": [
+        "Aturan konsisten",
+        "Data mentah tetap terlacak",
+        "Tidak menghapus rekaman sembarangan"
+      ],
+      "quiz": [
+        {
+          "question": "Mengapa data mentah sebaiknya disimpan?",
+          "options": [
+            "Agar sumber perubahan dapat diaudit",
+            "Agar tabel makin banyak",
+            "Agar grafik lebih cerah",
+            "Karena tidak boleh ada perubahan"
+          ],
+          "correct": 0,
+          "explanation": "Data mentah diperlukan untuk audit dan replikasi."
+        },
+        {
+          "question": "Menghapus semua baris yang memiliki nilai kosong adalah …",
+          "options": [
+            "Selalu tepat",
+            "Keputusan yang harus mempertimbangkan tujuan analisis",
+            "Wajib dalam informetrika",
+            "Cara menghitung h-index"
+          ],
+          "correct": 1,
+          "explanation": "Penanganan missing value bergantung pada konteks."
+        },
+        {
+          "question": "Contoh normalisasi adalah …",
+          "options": [
+            "Mengubah jumlah sitasi sesuka hati",
+            "Menyamakan nama jurnal yang sama dengan ejaan berbeda",
+            "Menghapus tahun yang rendah",
+            "Menambah rekaman fiktif"
+          ],
+          "correct": 1,
+          "explanation": "Normalisasi menyamakan representasi entitas yang sepadan."
+        },
+        {
+          "question": "Duplikasi publikasi dapat menyebabkan …",
+          "options": [
+            "Hitungan artikel menjadi terlalu tinggi",
+            "Semua indikator pasti menurun",
+            "Korpus berubah menjadi opini",
+            "Grafik tidak dapat dibuat"
+          ],
+          "correct": 0,
+          "explanation": "Duplikat menambah frekuensi secara semu."
+        }
+      ],
+      "tool": "explorer",
+      "reference": "",
+      "exam": false
+    },
+    {
+      "no": 5,
+      "title": "Statistik Deskriptif dan Distribusi",
+      "tag": "Ukuran dasar",
+      "description": "Menggunakan frekuensi, proporsi, rerata, median, dan perubahan antarperiode untuk menggambarkan data informasi.",
+      "objectives": [
+        "Menghitung frekuensi dan persentase.",
+        "Membedakan rerata dan median.",
+        "Memilih ringkasan sesuai bentuk variabel."
+      ],
+      "sections": [
+        {
+          "title": "Frekuensi dan proporsi",
+          "body": "Frekuensi menunjukkan jumlah kejadian; persentase = frekuensi ÷ total × 100%. Selalu sebutkan penyebut."
+        },
+        {
+          "title": "Rerata dan median",
+          "body": "Rerata = jumlah nilai ÷ jumlah data; median = nilai tengah setelah urut. Nilai ekstrem dapat memengaruhi rerata lebih besar daripada median."
+        },
+        {
+          "title": "Interpretasi",
+          "body": "Rangkuman statistik menggambarkan korpus, bukan populasi yang lebih luas secara otomatis."
+        }
+      ],
+      "steps": [
+        "Buka Eksplorasi Visual dan pilih data Publikasi atau Kunjungan.",
+        "Pilih variabel kategori lalu hitung frekuensi.",
+        "Ubah metrik count, sum, dan mean untuk melihat perbedaannya.",
+        "Tulis dua interpretasi yang menyebut periode dan satuan."
+      ],
+      "assignment": "Buat tabel frekuensi dan dua paragraf interpretasi deskriptif.",
+      "deliverable": "Tabel ringkas dan penjelasan 200 kata.",
+      "criteria": [
+        "Rumus dan pembagi benar",
+        "Satuan dan populasi jelas",
+        "Tidak menyimpulkan sebab-akibat"
+      ],
+      "quiz": [
+        {
+          "question": "Jika 12 dari 40 artikel terbit pada suatu tahun, persentasenya …",
+          "options": [
+            "12%",
+            "25%",
+            "30%",
+            "48%"
+          ],
+          "correct": 2,
+          "explanation": "12 ÷ 40 × 100% = 30%."
+        },
+        {
+          "question": "Median dari 2, 3, 5, 8, 100 adalah …",
+          "options": [
+            "5",
+            "8",
+            "23,6",
+            "3"
+          ],
+          "correct": 0,
+          "explanation": "Nilai tengah setelah diurutkan adalah 5."
+        },
+        {
+          "question": "Rerata paling mudah dipengaruhi oleh …",
+          "options": [
+            "Label kolom",
+            "Nilai ekstrem",
+            "Urutan abjad",
+            "Tipe grafik"
+          ],
+          "correct": 1,
+          "explanation": "Outlier dapat menggeser rerata."
+        },
+        {
+          "question": "Rata-rata 6 sitasi dari sampel 20 artikel berarti …",
+          "options": [
+            "Semua artikel memiliki 6 sitasi",
+            "Rerata pada sampel adalah 6",
+            "Tidak ada artikel tanpa sitasi",
+            "Semua artikel bermutu sama"
+          ],
+          "correct": 1,
+          "explanation": "Rerata tidak menggambarkan seluruh nilai secara individu."
+        }
+      ],
+      "tool": "explorer",
+      "reference": "",
+      "exam": false
+    },
+    {
+      "no": 6,
+      "title": "Visualisasi Data Ilmiah",
+      "tag": "Grafik yang tepat",
+      "description": "Memilih grafik berdasarkan tujuan analisis dan tipe data; menganalisis tren publikasi serta perbandingan kategori.",
+      "objectives": [
+        "Memilih grafik batang dan garis secara tepat.",
+        "Membaca sumbu, satuan, dan rentang.",
+        "Mengenali visualisasi yang dapat menyesatkan."
+      ],
+      "sections": [
+        {
+          "title": "Grafik batang",
+          "body": "Cocok untuk membandingkan kategori, seperti jumlah publikasi per jurnal. Pastikan label kategori dapat dibaca."
+        },
+        {
+          "title": "Grafik garis",
+          "body": "Cocok untuk urutan waktu yang bermakna, seperti jumlah publikasi setiap tahun; sumbu waktu harus runtut."
+        },
+        {
+          "title": "Integritas visual",
+          "body": "Jangan menghilangkan konteks nilai, menggunakan skala tidak konsisten, atau menyampaikan perbedaan kecil sebagai perubahan dramatis."
+        }
+      ],
+      "steps": [
+        "Buka Eksplorasi Visual → Publikasi Ilmu Perpustakaan.",
+        "Coba kelompokkan berdasarkan tahun dan pilih grafik garis.",
+        "Kelompokkan menurut jurnal dan pilih grafik batang.",
+        "Ekspor CSV ringkasan, lalu tuliskan alasan pemilihan grafik."
+      ],
+      "assignment": "Dua grafik disertai caption, sumber data, dan penjelasan pilihan bentuk grafik.",
+      "deliverable": "Gambar/screenshot grafik dan narasi 150–250 kata.",
+      "criteria": [
+        "Jenis grafik sesuai variabel",
+        "Caption dan sumber jelas",
+        "Interpretasi tepat"
+      ],
+      "quiz": [
+        {
+          "question": "Grafik yang cocok untuk perkembangan publikasi per tahun adalah …",
+          "options": [
+            "Garis",
+            "Peta negara",
+            "Diagram alir",
+            "Bagan organisasi"
+          ],
+          "correct": 0,
+          "explanation": "Garis menekankan urutan temporal."
+        },
+        {
+          "question": "Perbandingan 5 jurnal menurut jumlah artikel paling mudah ditampilkan sebagai …",
+          "options": [
+            "Grafik batang",
+            "Peta panas geografis",
+            "Gambar dekoratif",
+            "Awan kata tanpa nilai"
+          ],
+          "correct": 0,
+          "explanation": "Grafik batang memudahkan perbandingan kategori."
+        },
+        {
+          "question": "Sumbu yang dipotong tanpa penjelasan berisiko …",
+          "options": [
+            "Meningkatkan validitas",
+            "Membesar-besarkan perbedaan",
+            "Memperbaiki metadata",
+            "Mengurangi noise secara pasti"
+          ],
+          "correct": 1,
+          "explanation": "Skala visual dapat memengaruhi persepsi perbedaan."
+        },
+        {
+          "question": "Caption grafik sebaiknya memuat …",
+          "options": [
+            "Judul, satuan, cakupan, dan sumber",
+            "Hanya warna tema",
+            "Nomor kelompok saja",
+            "Hanya logo"
+          ],
+          "correct": 0,
+          "explanation": "Caption memberi konteks untuk interpretasi."
+        }
+      ],
+      "tool": "explorer",
+      "reference": "",
+      "exam": false
+    },
+    {
+      "no": 7,
+      "title": "Interpretasi Bukti dan Penulisan Temuan",
+      "tag": "Dari angka ke argumen",
+      "description": "Menyusun paragraf hasil berbasis bukti numerik dengan membedakan deskripsi, penjelasan, dan keterbatasan.",
+      "objectives": [
+        "Mengidentifikasi tren, variasi, dan nilai ekstrem.",
+        "Menyusun klaim yang didukung angka.",
+        "Menulis keterbatasan cakupan data."
+      ],
+      "sections": [
+        {
+          "title": "Pola kalimat temuan",
+          "body": "Tulis: [fakta terukur] + [perbandingan] + [konteks] + [batasan]. Contoh: Pada data sampel, 2025 memiliki lebih banyak rekaman daripada 2022; hal ini belum menunjukkan penyebabnya."
+        },
+        {
+          "title": "Klaim kausal",
+          "body": "Perubahan grafik tidak sendiri membuktikan intervensi menyebabkan perubahan."
+        },
+        {
+          "title": "Triangulasi",
+          "body": "Bila tersedia, bandingkan statistik dengan metadata, konteks kebijakan, atau sumber lain yang benar-benar relevan."
+        }
+      ],
+      "steps": [
+        "Amati satu grafik dari Laboratorium Data.",
+        "Tuliskan tiga fakta terukur lengkap dengan angka.",
+        "Tulis satu dugaan penjelasan dan jelaskan bahwa hal itu belum diuji.",
+        "Selesaikan kuis sebagai latihan persiapan UTS."
+      ],
+      "assignment": "Paragraf hasil singkat (200–250 kata) dan daftar dua keterbatasan.",
+      "deliverable": "Interpretasi berbasis grafik dan revisi argumentasi.",
+      "criteria": [
+        "Klaim didukung angka",
+        "Tidak mengklaim sebab-akibat tanpa bukti",
+        "Ada konteks dan keterbatasan"
+      ],
+      "quiz": [
+        {
+          "question": "Kalimat yang paling aman secara ilmiah adalah …",
+          "options": [
+            "Program A pasti meningkatkan kunjungan",
+            "Data sampel menunjukkan kunjungan meningkat pada periode pengamatan",
+            "Kenaikan membuktikan semua pengguna puas",
+            "Tidak perlu menyebut sumber"
+          ],
+          "correct": 1,
+          "explanation": "Deskripsi tren sesuai bukti yang tersedia."
+        },
+        {
+          "question": "Kelemahan kesimpulan tanpa sumber data adalah …",
+          "options": [
+            "Kurang dapat diverifikasi",
+            "Lebih singkat",
+            "Selalu salah secara matematis",
+            "Lebih menarik"
+          ],
+          "correct": 0,
+          "explanation": "Pembaca tidak dapat melacak asal angka."
+        },
+        {
+          "question": "Jika grafik turun lalu naik, istilah yang sesuai adalah …",
+          "options": [
+            "Konstan",
+            "Fluktuatif",
+            "Nol",
+            "Identik"
+          ],
+          "correct": 1,
+          "explanation": "Fluktuasi adalah perubahan naik-turun."
+        },
+        {
+          "question": "Keterbatasan korpus perlu ditulis agar …",
+          "options": [
+            "Grafik hilang",
+            "Kesimpulan tidak digeneralisasi berlebihan",
+            "Jumlah data bertambah",
+            "Nilai berubah"
+          ],
+          "correct": 1,
+          "explanation": "Batasan menjaga interpretasi sesuai cakupan."
+        }
+      ],
+      "tool": "explorer",
+      "reference": "",
+      "exam": false
+    },
+    {
+      "no": 8,
+      "title": "UTS: Asesmen Analisis Data Informasi",
+      "tag": "Evaluasi tengah semester",
+      "description": "Asesmen tengah semester menguji pemilihan data, pemeriksaan kualitas metadata, statistik deskriptif, visualisasi, dan penalaran berbasis bukti.",
+      "objectives": [
+        "Mengaplikasikan konsep pertemuan 1–7.",
+        "Menentukan jenis grafik dan metode ringkasan yang tepat.",
+        "Menafsirkan data tanpa klaim berlebihan."
+      ],
+      "sections": [
+        {
+          "title": "Instruksi asesmen",
+          "body": "Jawab soal secara mandiri berdasarkan pemahaman dari latihan sebelumnya. Skor kuis aplikasi bersifat latihan, bukan otomatis nilai resmi UTS."
+        },
+        {
+          "title": "Soal praktik",
+          "body": "Gunakan satu dataset di Laboratorium Data dan rangkum jumlah data, dua pola, serta satu keterbatasan pada portofolio."
+        }
+      ],
+      "steps": [
+        "Buka Laboratorium Data dan pilih dataset relevan.",
+        "Selesaikan asesmen UTS di bawah tanpa melihat pembahasan sampai dikirim.",
+        "Isi refleksi tentang bagian yang masih sulit.",
+        "Ekspor portofolio untuk dikumpulkan di SIPEJAR bila diminta dosen."
+      ],
+      "assignment": "Selesaikan soal UTS dan buat laporan analisis ringkas (maksimal dua halaman).",
+      "deliverable": "Skor asesmen dalam browser dan file portofolio.",
+      "criteria": [
+        "Jawaban mandiri dan dapat dijelaskan",
+        "Tepat memilih indikator",
+        "Analisis mempertimbangkan kualitas data"
+      ],
+      "quiz": [
+        {
+          "question": "Ruang lingkup korpus ditetapkan oleh …",
+          "options": [
+            "Warna halaman",
+            "Sumber, kriteria, dan rentang waktu",
+            "Jumlah peserta presentasi",
+            "Ukuran font"
+          ],
+          "correct": 1,
+          "explanation": "Cakupan korpus harus didefinisikan."
+        },
+        {
+          "question": "Nilai 9 dari 30 setara …",
+          "options": [
+            "9%",
+            "18%",
+            "30%",
+            "39%"
+          ],
+          "correct": 2,
+          "explanation": "9 ÷ 30 × 100% = 30%."
+        },
+        {
+          "question": "Grafik yang cocok untuk publikasi tahunan …",
+          "options": [
+            "Garis",
+            "Peta konsep",
+            "Ikon",
+            "Diagram struktur organisasi"
+          ],
+          "correct": 0,
+          "explanation": "Data tahun memiliki urutan waktu."
+        },
+        {
+          "question": "Kelebihan median terhadap rerata adalah …",
+          "options": [
+            "Selalu lebih besar",
+            "Lebih tahan terhadap nilai ekstrem",
+            "Dapat membuktikan sebab",
+            "Tidak perlu urutan"
+          ],
+          "correct": 1,
+          "explanation": "Median relatif tahan terhadap outlier."
+        },
+        {
+          "question": "Dua nama penulis yang mirip sebaiknya …",
+          "options": [
+            "Langsung disatukan",
+            "Diverifikasi menggunakan metadata lain",
+            "Dihapus",
+            "Selalu dianggap berbeda"
+          ],
+          "correct": 1,
+          "explanation": "Disambiguasi penulis perlu verifikasi."
+        },
+        {
+          "question": "Pernyataan yang didukung grafik adalah …",
+          "options": [
+            "Grafik naik, maka kebijakan pasti berhasil",
+            "Kunjungan cenderung meningkat pada data teramati",
+            "Semua pengguna puas",
+            "Koleksi bertambah secara otomatis"
+          ],
+          "correct": 1,
+          "explanation": "Peningkatan teramati tidak membuktikan penyebab."
+        },
+        {
+          "question": "Metadata DOI kosong berarti …",
+          "options": [
+            "Seluruh publikasi palsu",
+            "Perlu pengecekan dan perlakuan data hilang",
+            "Artikel pasti tidak berkualitas",
+            "Harus diisi angka nol"
+          ],
+          "correct": 1,
+          "explanation": "Missing value perlu ditangani secara tepat."
+        },
+        {
+          "question": "Variabel jumlah sitasi adalah …",
+          "options": [
+            "Numerik",
+            "Warna",
+            "Nominal teks",
+            "Label gambar"
+          ],
+          "correct": 0,
+          "explanation": "Sitasi merupakan hitungan."
+        },
+        {
+          "question": "Kesimpulan dari korpus contoh …",
+          "options": [
+            "Selalu berlaku untuk seluruh dunia",
+            "Terbatas pada cakupan data dan metode",
+            "Tidak perlu menyebut sumber",
+            "Selalu bersifat kausal"
+          ],
+          "correct": 1,
+          "explanation": "Generalisasi harus sesuai cakupan."
+        },
+        {
+          "question": "Langkah yang tepat setelah cleaning adalah …",
+          "options": [
+            "Menyimpan log perubahan",
+            "Menghapus data mentah",
+            "Mengubah hasil agar sesuai hipotesis",
+            "Mengabaikan duplikasi"
+          ],
+          "correct": 0,
+          "explanation": "Log perubahan meningkatkan keterlacakan."
+        }
+      ],
+      "tool": "explorer",
+      "reference": "",
+      "exam": true
+    },
+    {
+      "no": 9,
+      "title": "Hukum Bradford: Zona Produktivitas Jurnal",
+      "tag": "Bradford",
+      "description": "Menganalisis sebaran artikel terhadap jurnal, membagi jurnal menjadi zona dengan jumlah artikel yang mendekati sama, dan memahami jurnal inti.",
+      "objectives": [
+        "Mengurutkan jurnal berdasarkan artikel.",
+        "Menghitung pembagian tiga zona Bradford.",
+        "Menjelaskan interpretasi dan batasan pola zona."
+      ],
+      "sections": [
+        {
+          "title": "Prinsip Bradford",
+          "body": "Jika jurnal diurutkan menurut jumlah artikel, pembagian ke zona dengan jumlah artikel mendekati sama sering menunjukkan jumlah jurnal yang makin banyak pada zona berikutnya."
+        },
+        {
+          "title": "Contoh latihan",
+          "body": "Pada dataset sampel 20 jurnal dengan 105 artikel, tiga zona ditetapkan dengan total 37, 36, dan 32 artikel, berisi 3, 6, dan 11 jurnal. Pembagian bergantung pada data dan aturan toleransi."
+        },
+        {
+          "title": "Interpretasi",
+          "body": "Bradford membantu identifikasi jurnal inti pada korpus, tetapi tidak otomatis membuktikan mutu jurnal atau kesesuaian seluruh artikel."
+        }
+      ],
+      "steps": [
+        "Buka Kalkulator Bradford pada Laboratorium Rumus.",
+        "Gunakan data contoh atau ketik deret frekuensi jurnal yang telah diurutkan.",
+        "Periksa total artikel, jumlah jurnal, dan rasio antar zona.",
+        "Jelaskan mengapa ukuran zona berbeda meskipun jumlah artikelnya mendekati sama."
+      ],
+      "assignment": "Sajikan tabel tiga zona Bradford beserta narasi jurnal inti.",
+      "deliverable": "Tabel zona dan interpretasi 200 kata.",
+      "criteria": [
+        "Pengurutan benar",
+        "Jumlah artikel dan jurnal benar",
+        "Interpretasi tidak mengklaim kualitas"
+      ],
+      "quiz": [
+        {
+          "question": "Pada Bradford, jurnal terlebih dahulu diurutkan berdasarkan …",
+          "options": [
+            "Jumlah artikel relevan menurun",
+            "Abjad nama penulis",
+            "Tahun pertama berdiri",
+            "Panjang nama jurnal"
+          ],
+          "correct": 0,
+          "explanation": "Urutan berdasarkan produktivitas artikel relevan."
+        },
+        {
+          "question": "Zona Bradford dibentuk agar …",
+          "options": [
+            "Jumlah jurnal selalu sama",
+            "Jumlah artikel tiap zona mendekati sama",
+            "Semua jurnal memiliki sitasi sama",
+            "Tahun penerbitan identik"
+          ],
+          "correct": 1,
+          "explanation": "Distribusi artikel dipertahankan kira-kira seimbang."
+        },
+        {
+          "question": "Contoh 3, 6, 11 menunjukkan …",
+          "options": [
+            "Jumlah artikel per zona",
+            "Jumlah jurnal per zona",
+            "Jumlah penulis",
+            "Nilai h-index"
+          ],
+          "correct": 1,
+          "explanation": "Itu adalah banyak jurnal pada masing-masing zona."
+        },
+        {
+          "question": "Jurnal inti di zona pertama berarti …",
+          "options": [
+            "Paling banyak memuat artikel relevan dalam korpus",
+            "Pasti paling berkualitas global",
+            "Selalu jurnal Q1",
+            "Semua artikelnya benar"
+          ],
+          "correct": 0,
+          "explanation": "Jurnal inti didefinisikan relatif terhadap korpus yang dianalisis."
+        }
+      ],
+      "tool": "bradford",
+      "reference": "Contoh zona: 3 jurnal/37 artikel, 6 jurnal/36 artikel, 11 jurnal/32 artikel.",
+      "exam": false
+    },
+    {
+      "no": 10,
+      "title": "Hukum Lotka: Produktivitas Penulis",
+      "tag": "Lotka",
+      "description": "Mempelajari pola frekuensi penulis menurut jumlah publikasinya dan membandingkan distribusi teramati dengan bentuk sederhana hukum Lotka.",
+      "objectives": [
+        "Menghitung banyak penulis per jumlah artikel.",
+        "Menggunakan bentuk pendekatan f(n) = C/n².",
+        "Membedakan model teoretis dan data observasi."
+      ],
+      "sections": [
+        {
+          "title": "Prinsip Lotka",
+          "body": "Dalam bentuk sederhana, jumlah penulis yang menghasilkan n publikasi sering didekati dengan f(n) = C/n², dengan C adalah jumlah atau proporsi penulis yang menghasilkan satu publikasi, tergantung normalisasi."
+        },
+        {
+          "title": "Perhitungan",
+          "body": "Jika f(1) = 40, prediksi f(2) = 40/4 = 10. Nilai prediksi bukan jumlah aktual dalam data."
+        },
+        {
+          "title": "Batasan",
+          "body": "Pola produktivitas dipengaruhi disiplin, periode, definisi penulis, dan disambiguasi identitas."
+        }
+      ],
+      "steps": [
+        "Buka Kalkulator Lotka.",
+        "Masukkan jumlah penulis satu artikel dan eksponen n.",
+        "Bandingkan prediksi untuk n = 1–6 dengan contoh distribusi observasi.",
+        "Tulis satu alasan hasil nyata dapat berbeda dari hukum ideal."
+      ],
+      "assignment": "Tabel prediksi dan observasi produktivitas penulis beserta diskusi.",
+      "deliverable": "Tabel frekuensi penulis, kurva/pola, dan interpretasi.",
+      "criteria": [
+        "Menggunakan rumus benar",
+        "Membedakan prediksi dan observasi",
+        "Menyebut kondisi data"
+      ],
+      "quiz": [
+        {
+          "question": "Bentuk sederhana Hukum Lotka adalah …",
+          "options": [
+            "f(n) = C/n²",
+            "f(n) = C+n²",
+            "f(n) = n/C",
+            "f(n) = C×n²"
+          ],
+          "correct": 0,
+          "explanation": "Hukum Lotka sering dinyatakan dengan hubungan pangkat terbalik."
+        },
+        {
+          "question": "Jika C=40, prediksi untuk n=2 adalah …",
+          "options": [
+            "20",
+            "40",
+            "10",
+            "5"
+          ],
+          "correct": 2,
+          "explanation": "40 ÷ 2² = 10."
+        },
+        {
+          "question": "Jumlah penulis dua artikel pada data nyata …",
+          "options": [
+            "Harus sama dengan prediksi",
+            "Dapat berbeda dari model ideal",
+            "Selalu dua",
+            "Tidak mungkin dihitung"
+          ],
+          "correct": 1,
+          "explanation": "Hukum merupakan pendekatan empiris, bukan persamaan yang selalu persis."
+        },
+        {
+          "question": "Disambiguasi penulis penting karena …",
+          "options": [
+            "Mengubah warna grafik",
+            "Satu orang bisa muncul dalam beberapa bentuk nama",
+            "Menghapus semua sitasi",
+            "Menghasilkan DOI"
+          ],
+          "correct": 1,
+          "explanation": "Variasi nama dapat memecah hitungan produktivitas."
+        }
+      ],
+      "tool": "lotka",
+      "reference": "",
+      "exam": false
+    },
+    {
+      "no": 11,
+      "title": "Hukum Zipf: Frekuensi Kata Kunci",
+      "tag": "Zipf",
+      "description": "Menganalisis hubungan peringkat kata dan frekuensinya setelah normalisasi, tokenisasi, dan penghapusan stopword yang sesuai.",
+      "objectives": [
+        "Menghitung dan mengurutkan frekuensi kata.",
+        "Mengamati hubungan peringkat r dan frekuensi f.",
+        "Menilai dampak normalisasi kata terhadap hasil."
+      ],
+      "sections": [
+        {
+          "title": "Prinsip Zipf",
+          "body": "Bentuk ideal yang sering digunakan adalah f(r) ≈ K/r: kata berperingkat tinggi muncul lebih sering daripada kata berperingkat rendah."
+        },
+        {
+          "title": "Persiapan teks",
+          "body": "Normalisasi huruf besar-kecil, simbol, stopword, dan sinonim harus konsisten. Frasa seperti digital library dapat menjadi satu unit bila analisis memakai kata kunci frasa."
+        },
+        {
+          "title": "Batasan",
+          "body": "Distribusi nyata tidak harus mengikuti rumus secara tepat, terlebih pada korpus kecil."
+        }
+      ],
+      "steps": [
+        "Buka Kalkulator Zipf.",
+        "Masukkan frekuensi kata paling sering sebagai konstanta K.",
+        "Periksa prediksi untuk rank 1–10.",
+        "Buat contoh lima kata kunci dari dataset publikasi dan susun peringkat."
+      ],
+      "assignment": "Buat tabel peringkat, frekuensi, dan interpretasi Zipf.",
+      "deliverable": "Tabel minimal lima kata dan satu paragraf keterbatasan.",
+      "criteria": [
+        "Rank benar",
+        "Pemrosesan kata konsisten",
+        "Tidak memaksakan kecocokan teoritis"
+      ],
+      "quiz": [
+        {
+          "question": "Zipf menghubungkan …",
+          "options": [
+            "Peringkat kata dan frekuensinya",
+            "Jumlah jurnal dan lokasi",
+            "Nilai dan jenis kelamin",
+            "Ruang rak dan suhu"
+          ],
+          "correct": 0,
+          "explanation": "Zipf mengamati rank-frequency."
+        },
+        {
+          "question": "Jika K=100, f(4) ideal sekitar …",
+          "options": [
+            "400",
+            "25",
+            "104",
+            "4"
+          ],
+          "correct": 1,
+          "explanation": "100 ÷ 4 = 25."
+        },
+        {
+          "question": "Mengapa stopword perlu dipertimbangkan?",
+          "options": [
+            "Karena dapat mendominasi frekuensi tanpa makna topik",
+            "Supaya semua kata hilang",
+            "Karena harus diterjemahkan",
+            "Supaya rank acak"
+          ],
+          "correct": 0,
+          "explanation": "Stopword bisa mengaburkan istilah substantif."
+        },
+        {
+          "question": "Kata kunci dua kata yang bermakna satu konsep sebaiknya …",
+          "options": [
+            "Selalu dipecah tanpa pertimbangan",
+            "Diperlakukan konsisten sesuai unit analisis",
+            "Dihapus",
+            "Diberi frekuensi nol"
+          ],
+          "correct": 1,
+          "explanation": "Unit analisis harus konsisten."
+        }
+      ],
+      "tool": "zipf",
+      "reference": "",
+      "exam": false
+    },
+    {
+      "no": 12,
+      "title": "Analisis Sitasi, h-index, dan Keterbatasannya",
+      "tag": "Indikator sitasi",
+      "description": "Menghitung jumlah sitasi dan h-index serta membedakan popularitas sitasi dari mutu penelitian.",
+      "objectives": [
+        "Mengurutkan artikel berdasarkan sitasi menurun.",
+        "Menghitung h-index dari sebuah daftar.",
+        "Mengenali bias umur dokumen dan basis data."
+      ],
+      "sections": [
+        {
+          "title": "Definisi h-index",
+          "body": "h-index adalah nilai h terbesar sehingga terdapat sedikitnya h publikasi yang masing-masing memiliki paling sedikit h sitasi."
+        },
+        {
+          "title": "Contoh",
+          "body": "Untuk sitasi [12, 8, 5, 3, 1], h-index adalah 3 karena artikel peringkat empat hanya memiliki 3 sitasi."
+        },
+        {
+          "title": "Keterbatasan",
+          "body": "Sitasi bukan ukuran sempurna kualitas. Artikel lama, topik populer, dan cakupan pengindeksan dapat memengaruhi hitungan."
+        }
+      ],
+      "steps": [
+        "Buka Kalkulator Sitasi pada Laboratorium Rumus.",
+        "Masukkan 12, 8, 5, 3, 1 dan cek hasilnya.",
+        "Ubah satu nilai untuk melihat perubahan h-index.",
+        "Tuliskan dua alasan h-index tidak boleh menjadi satu-satunya dasar evaluasi."
+      ],
+      "assignment": "Sajikan perhitungan h-index lengkap dengan keterbatasannya.",
+      "deliverable": "Daftar sitasi terurut dan interpretasi.",
+      "criteria": [
+        "h-index benar",
+        "Langkah perhitungan jelas",
+        "Tidak menyamakan sitasi dengan kualitas"
+      ],
+      "quiz": [
+        {
+          "question": "h-index dari [12, 8, 5, 3, 1] adalah …",
+          "options": [
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "correct": 1,
+          "explanation": "Tiga artikel memiliki ≥3 sitasi, tetapi empat artikel tidak memiliki ≥4."
+        },
+        {
+          "question": "Sitasi tinggi pasti membuktikan …",
+          "options": [
+            "Kualitas luar biasa",
+            "Tidak ada kesalahan",
+            "Tidak selalu; perlu konteks",
+            "Semua artikel terkait"
+          ],
+          "correct": 2,
+          "explanation": "Sitasi merupakan sinyal perhatian akademik yang membutuhkan konteks."
+        },
+        {
+          "question": "Data sitasi sebaiknya dicatat bersama …",
+          "options": [
+            "Sumber indeks dan tanggal akses",
+            "Warna tema",
+            "Jenis laptop",
+            "Nomor meja"
+          ],
+          "correct": 0,
+          "explanation": "Sitasi berubah dan bervariasi menurut sumber."
+        },
+        {
+          "question": "Jika urutan sitasi adalah [5,4,3,2], h-index …",
+          "options": [
+            "4",
+            "3",
+            "2",
+            "1"
+          ],
+          "correct": 1,
+          "explanation": "Artikel ketiga punya ≥3; artikel keempat tidak punya ≥4."
+        }
+      ],
+      "tool": "citation",
+      "reference": "",
+      "exam": false
+    },
+    {
+      "no": 13,
+      "title": "Scientometrika dan Pemetaan Kolaborasi",
+      "tag": "Jaringan ilmiah",
+      "description": "Mengenali indikator kegiatan ilmiah, pola kolaborasi penulis, dan jaringan hubungan publikasi, tanpa mencampuradukkan jenis hubungan.",
+      "objectives": [
+        "Membedakan bibliometrika, scientometrika, dan analisis jaringan.",
+        "Menjelaskan co-authorship, co-citation, dan bibliographic coupling.",
+        "Membaca jejaring kolaborasi sederhana."
+      ],
+      "sections": [
+        {
+          "title": "Pembedaan praktis",
+          "body": "Bibliometrika mengukur dokumen dan komunikasi ilmiah; scientometrika melihat dinamika dan indikator kegiatan sains; keduanya saling beririsan."
+        },
+        {
+          "title": "Jaringan penulis",
+          "body": "Co-authorship menghubungkan penulis yang menulis karya bersama. Banyak koneksi bukan otomatis kualitas kolaborasi."
+        },
+        {
+          "title": "Jenis jaringan",
+          "body": "Co-citation: dua karya dikutip bersama oleh karya lain. Bibliographic coupling: dua karya berbagi referensi. Jenis sisi harus disebutkan."
+        }
+      ],
+      "steps": [
+        "Buka dataset Publikasi Ilmu Perpustakaan dan amati kolom penulis.",
+        "Buat pasangan dua penulis dari contoh artikel bersama.",
+        "Jelaskan perbedaan jaringan co-authorship dan co-citation.",
+        "Sajikan dua kemungkinan pemanfaatan peta kolaborasi."
+      ],
+      "assignment": "Buat ilustrasi jaringan sederhana (5 simpul) dan narasi interpretasinya.",
+      "deliverable": "Diagram jaringan dan deskripsi jenis hubungan.",
+      "criteria": [
+        "Sisi jaringan terdefinisi",
+        "Tidak melebihkan hasil",
+        "Penjelasan dapat ditelusuri"
+      ],
+      "quiz": [
+        {
+          "question": "Co-authorship terbentuk ketika …",
+          "options": [
+            "Dua penulis menulis karya bersama",
+            "Dua artikel terbit pada tahun sama",
+            "Dua jurnal satu warna",
+            "Dua dosen satu kantor"
+          ],
+          "correct": 0,
+          "explanation": "Relasi co-authorship berasal dari kepenulisan bersama."
+        },
+        {
+          "question": "Co-citation berarti …",
+          "options": [
+            "Dua karya berbagi penulis",
+            "Dua karya dikutip bersama oleh karya lain",
+            "Dua karya memiliki judul sama",
+            "Dua karya dihapus"
+          ],
+          "correct": 1,
+          "explanation": "Keterkutipan bersama menjadi dasar co-citation."
+        },
+        {
+          "question": "Bibliographic coupling terjadi jika …",
+          "options": [
+            "Dua karya menggunakan referensi yang sama",
+            "Dua karya memiliki sitasi sama",
+            "Dua penulis bersaudara",
+            "Dua artikel memiliki DOI kosong"
+          ],
+          "correct": 0,
+          "explanation": "Kesamaan daftar rujukan menjadi basis coupling."
+        },
+        {
+          "question": "Jaringan padat menunjukkan …",
+          "options": [
+            "Banyak hubungan menurut definisi sisi",
+            "Kualitas selalu tinggi",
+            "Semua simpul benar",
+            "Seluruh bidang identik"
+          ],
+          "correct": 0,
+          "explanation": "Interpretasi jaringan harus sesuai relasinya."
+        }
+      ],
+      "tool": "explorer",
+      "reference": "",
+      "exam": false
+    },
+    {
+      "no": 14,
+      "title": "Altmetrika dan Evaluasi Dampak Digital",
+      "tag": "Indikator alternatif",
+      "description": "Membandingkan sitasi akademik dengan jejak perhatian daring seperti penyebutan, unggahan, dan penyimpanan.",
+      "objectives": [
+        "Membedakan attention metrics dan citation metrics.",
+        "Mengidentifikasi sumber dan bias altmetrika.",
+        "Menyusun ringkasan multi-indikator dengan caveat."
+      ],
+      "sections": [
+        {
+          "title": "Altmetrika",
+          "body": "Altmetrika merujuk pada indikator perhatian atau interaksi daring terhadap karya ilmiah, seperti penyebutan di media sosial, berita, atau sistem manajemen referensi."
+        },
+        {
+          "title": "Tidak sama dengan dampak ilmiah",
+          "body": "Banyak unggahan tidak membuktikan kualitas, penerimaan ilmiah, atau kebermanfaatan praktis."
+        },
+        {
+          "title": "Sumber dan waktu",
+          "body": "Nilai altmetrika dipengaruhi platform, tanggal pengambilan, aksesibilitas konten, dan kebijakan pelacakan."
+        }
+      ],
+      "steps": [
+        "Buka dataset Dampak Digital (sampel).",
+        "Bandingkan jumlah sitasi dengan penyebutan sosial pada tiga rekaman.",
+        "Identifikasi satu artikel dengan sitasi rendah tetapi perhatian daring tinggi.",
+        "Tulis penjelasan yang tidak menyamakan kedua indikator tersebut."
+      ],
+      "assignment": "Tabel komparasi dua indikator dan 200 kata interpretasi.",
+      "deliverable": "Tabel dan keterbatasan masing-masing indikator.",
+      "criteria": [
+        "Indikator dibedakan",
+        "Sumber nilai dinyatakan",
+        "Tidak membuat klaim kualitas secara otomatis"
+      ],
+      "quiz": [
+        {
+          "question": "Altmetrika lebih dekat pada pengukuran …",
+          "options": [
+            "Perhatian dan interaksi daring",
+            "Suhu ruang arsip",
+            "Jumlah rak",
+            "Kecepatan jaringan"
+          ],
+          "correct": 0,
+          "explanation": "Altmetrika menangkap perhatian atau interaksi digital."
+        },
+        {
+          "question": "Banyaknya unggahan suatu artikel …",
+          "options": [
+            "Pasti membuktikan kualitas tinggi",
+            "Menunjukkan perhatian daring, bukan bukti kualitas otomatis",
+            "Sama dengan jumlah sitasi",
+            "Tidak dapat diukur"
+          ],
+          "correct": 1,
+          "explanation": "Perhatian daring dan kualitas ilmiah adalah konsep berbeda."
+        },
+        {
+          "question": "Contoh indikator sitasi adalah …",
+          "options": [
+            "Jumlah tweet",
+            "Jumlah kutipan akademik",
+            "Jumlah suka foto pribadi",
+            "Jumlah klik navigasi"
+          ],
+          "correct": 1,
+          "explanation": "Sitasi berkaitan dengan rujukan karya ilmiah."
+        },
+        {
+          "question": "Mengapa periode pengambilan penting?",
+          "options": [
+            "Nilai perhatian daring dapat berubah",
+            "Supaya grafik indah",
+            "Agar semuanya tetap",
+            "Supaya artikel punya DOI"
+          ],
+          "correct": 0,
+          "explanation": "Indikator digital bersifat dinamis."
+        }
+      ],
+      "tool": "explorer",
+      "reference": "",
+      "exam": false
+    },
+    {
+      "no": 15,
+      "title": "Proyek Akhir Mini: Laporan Informetrika",
+      "tag": "Praktik integratif",
+      "description": "Mengintegrasikan penyusunan korpus, cleaning, perhitungan indikator, visualisasi, dan interpretasi ke dalam laporan ringkas yang dapat diaudit.",
+      "objectives": [
+        "Menyusun alur analisis ujung ke ujung.",
+        "Menentukan indikator sesuai pertanyaan penelitian.",
+        "Menyajikan laporan yang transparan dan dapat diperiksa."
+      ],
+      "sections": [
+        {
+          "title": "Tugas mini proyek",
+          "body": "Pilih dataset publikasi sampel atau data publik yang telah dibersihkan. Tentukan satu pertanyaan utama dan satu indikator tambahan: tren, produktivitas, Bradford, Lotka, Zipf, atau sitasi."
+        },
+        {
+          "title": "Struktur laporan",
+          "body": "Judul dan pertanyaan → sumber/korpus → cleaning → hasil dan grafik → interpretasi → keterbatasan → lampiran data."
+        },
+        {
+          "title": "Etika dan transparansi",
+          "body": "Hapus identitas pribadi yang tidak dibutuhkan; tulis jika dataset merupakan sampel atau hasil simulasi."
+        }
+      ],
+      "steps": [
+        "Pilih dataset serta pertanyaan penelitian.",
+        "Gunakan Laboratorium Data dan salah satu kalkulator metrik.",
+        "Buat grafik, tabel, dan paragraf hasil.",
+        "Isi checklist dan ekspor portofolio untuk disatukan dengan laporan."
+      ],
+      "assignment": "Laporan mini 3–5 halaman dengan tabel/grafik dan lampiran data.",
+      "deliverable": "Laporan PDF (diolah sendiri) dan portofolio RuangData JSON.",
+      "criteria": [
+        "Pertanyaan dan korpus jelas",
+        "Perhitungan dapat ditelusuri",
+        "Grafik dan interpretasi tepat",
+        "Mencantumkan keterbatasan"
+      ],
+      "quiz": [
+        {
+          "question": "Urutan analisis yang baik adalah …",
+          "options": [
+            "Kesimpulan dahulu, baru data",
+            "Pertanyaan → korpus → cleaning → analisis → interpretasi",
+            "Grafik → asumsi → hapus data",
+            "Judul → dekorasi → publikasi"
+          ],
+          "correct": 1,
+          "explanation": "Alur menjaga ketepatan analisis."
+        },
+        {
+          "question": "Jika memakai dataset latihan, laporan wajib …",
+          "options": [
+            "Mengklaim data resmi",
+            "Menjelaskan bahwa data sampel/simulasi",
+            "Menghapus sumber",
+            "Mengubah semua nilai"
+          ],
+          "correct": 1,
+          "explanation": "Sumber dan sifat data harus transparan."
+        },
+        {
+          "question": "Keterbatasan proyek perlu menyebut …",
+          "options": [
+            "Hanya warna grafik",
+            "Cakupan dan kualitas data",
+            "Nama aplikasi foto",
+            "Ukuran dokumen saja"
+          ],
+          "correct": 1,
+          "explanation": "Batasan menjelaskan sejauh mana hasil berlaku."
+        },
+        {
+          "question": "Praktik berbasis data yang baik …",
+          "options": [
+            "Menghindari log proses",
+            "Menyertakan aturan cleaning dan asal data",
+            "Menyalin hasil tanpa cek",
+            "Menggabungkan sumber tanpa catatan"
+          ],
+          "correct": 1,
+          "explanation": "Auditabilitas mendukung replikasi."
+        }
+      ],
+      "tool": "explorer",
+      "reference": "",
+      "exam": false
+    },
+    {
+      "no": 16,
+      "title": "UAS: Analisis dan Refleksi Literasi Data",
+      "tag": "Evaluasi akhir semester",
+      "description": "Mengukur kembali kemampuan membaca data, menghitung indikator dasar, serta menyusun kesimpulan yang dibatasi bukti. Asesmen ini dapat dibandingkan dengan pertemuan 1 secara deskriptif.",
+      "objectives": [
+        "Mengintegrasikan keterampilan 15 pertemuan sebelumnya.",
+        "Menyelesaikan soal indikator bibliometrika.",
+        "Menyusun refleksi pembelajaran dan rencana tindak lanjut."
+      ],
+      "sections": [
+        {
+          "title": "Petunjuk UAS",
+          "body": "Jawab semua soal aplikasi lalu tulis ringkasan kemampuan yang meningkat dan bagian yang masih membutuhkan latihan."
+        },
+        {
+          "title": "Penggunaan hasil",
+          "body": "Skor lokal hanya tersedia pada browser dan file portofolio yang diekspor sendiri. Dosen menentukan penilaian resmi melalui sistem perkuliahan."
+        }
+      ],
+      "steps": [
+        "Selesaikan asesmen UAS.",
+        "Kerjakan satu analisis data dengan indikator yang sesuai.",
+        "Bandingkan catatan refleksi awal dan akhir secara kualitatif.",
+        "Ekspor portofolio untuk pelaporan akhir."
+      ],
+      "assignment": "Asesmen UAS, ringkasan analisis data, dan refleksi 250 kata.",
+      "deliverable": "Portofolio JSON dan laporan ringkas.",
+      "criteria": [
+        "Indikator terhitung benar",
+        "Analisis sesuai bukti",
+        "Keterbatasan disadari",
+        "Refleksi substantif"
+      ],
+      "quiz": [
+        {
+          "question": "Jika 20 jurnal memuat 105 artikel, penentuan zona Bradford berorientasi pada …",
+          "options": [
+            "Artikel per zona mendekati sama",
+            "Jurnal per zona selalu sama",
+            "Jumlah penulis sama",
+            "Semua sitasi nol"
+          ],
+          "correct": 0,
+          "explanation": "Bradford mendekati kesetaraan jumlah artikel per zona."
+        },
+        {
+          "question": "Dengan Lotka C=36, f(3) sekitar …",
+          "options": [
+            "12",
+            "9",
+            "4",
+            "108"
+          ],
+          "correct": 2,
+          "explanation": "36/3² = 4."
+        },
+        {
+          "question": "Untuk Zipf K=90, perkiraan frekuensi rank 5 …",
+          "options": [
+            "450",
+            "18",
+            "95",
+            "5"
+          ],
+          "correct": 1,
+          "explanation": "90/5 = 18."
+        },
+        {
+          "question": "h-index [9,7,4,2] adalah …",
+          "options": [
+            "4",
+            "3",
+            "2",
+            "1"
+          ],
+          "correct": 1,
+          "explanation": "Tiga artikel mempunyai ≥3 sitasi; peringkat empat punya 2."
+        },
+        {
+          "question": "Peningkatan jumlah sitasi membuktikan …",
+          "options": [
+            "Selalu artikel lebih berkualitas",
+            "Tidak selalu; perlu konteks",
+            "Seluruh penulis berkolaborasi",
+            "Metadata lengkap"
+          ],
+          "correct": 1,
+          "explanation": "Indikator tunggal tidak otomatis membuktikan kualitas."
+        },
+        {
+          "question": "Jika data memuat satu artikel per baris, unit analisis tren tahunan …",
+          "options": [
+            "Artikel",
+            "Penulis unik",
+            "Kata",
+            "Ruang kelas"
+          ],
+          "correct": 0,
+          "explanation": "Publikasi dipetakan ke tahunnya."
+        },
+        {
+          "question": "Analisis jejaring dua artikel yang berbagi daftar referensi disebut …",
+          "options": [
+            "Co-authorship",
+            "Bibliographic coupling",
+            "Altmetrics",
+            "Zipf"
+          ],
+          "correct": 1,
+          "explanation": "Coupling berbasis referensi bersama."
+        },
+        {
+          "question": "Kesimpulan yang bertanggung jawab …",
+          "options": [
+            "Mengklaim kausal dari semua grafik",
+            "Memuat angka, konteks, dan keterbatasan",
+            "Menutup sumber data",
+            "Mengabaikan anomali"
+          ],
+          "correct": 1,
+          "explanation": "Interpretasi harus dapat dilacak."
+        },
+        {
+          "question": "Altmetrika mengukur terutama …",
+          "options": [
+            "Perhatian daring",
+            "Jumlah DOI",
+            "Jurnal inti",
+            "Median sitasi"
+          ],
+          "correct": 0,
+          "explanation": "Altmetrika menunjukkan perhatian atau interaksi digital."
+        },
+        {
+          "question": "Portofolio yang kuat perlu mencakup …",
+          "options": [
+            "Hanya skor akhir",
+            "Bukti proses, grafik, interpretasi, refleksi",
+            "Hanya logo",
+            "Tidak perlu sumber"
+          ],
+          "correct": 1,
+          "explanation": "Portofolio merekam proses dan argumen."
+        }
+      ],
+      "tool": "explorer",
+      "reference": "",
+      "exam": true
+    }
+  ],
+  "datasets": [
+    {
+      "id": "publikasi",
+      "name": "Publikasi Ilmu Perpustakaan",
+      "description": "48 rekaman bibliografi ilustratif untuk praktik korpus, grafik, dan sitasi.",
+      "category": "Bibliometrika",
+      "rows": [
+        {
+          "id": "PUB-001",
+          "tahun": 2020,
+          "jurnal": "Jurnal Perpustakaan A",
+          "penulis": "Rina Saputra",
+          "kata_kunci": "perpustakaan digital",
+          "metode": "Survei",
+          "sitasi": 3
+        },
+        {
+          "id": "PUB-002",
+          "tahun": 2021,
+          "jurnal": "Jurnal Digital D",
+          "penulis": "Nadia Larasati",
+          "kata_kunci": "temu kembali",
+          "metode": "Studi kasus",
+          "sitasi": 10
+        },
+        {
+          "id": "PUB-003",
+          "tahun": 2022,
+          "jurnal": "Jurnal Informasi B",
+          "penulis": "Andi Prakoso",
+          "kata_kunci": "akses terbuka",
+          "metode": "Analisis dokumen",
+          "sitasi": 17
+        },
+        {
+          "id": "PUB-004",
+          "tahun": 2023,
+          "jurnal": "Jurnal Data E",
+          "penulis": "Lita Kurnia",
+          "kata_kunci": "perpustakaan digital",
+          "metode": "Bibliometrika",
+          "sitasi": 24
+        },
+        {
+          "id": "PUB-005",
+          "tahun": 2024,
+          "jurnal": "Jurnal Literasi C",
+          "penulis": "Bima Nugroho",
+          "kata_kunci": "temu kembali",
+          "metode": "Survei",
+          "sitasi": 4
+        },
+        {
+          "id": "PUB-006",
+          "tahun": 2025,
+          "jurnal": "Jurnal Perpustakaan A",
+          "penulis": "Dewi Rahmani",
+          "kata_kunci": "metadata",
+          "metode": "Studi kasus",
+          "sitasi": 11
+        },
+        {
+          "id": "PUB-007",
+          "tahun": 2020,
+          "jurnal": "Jurnal Data E",
+          "penulis": "Rafi Wijaya",
+          "kata_kunci": "literasi informasi",
+          "metode": "Analisis dokumen",
+          "sitasi": 18
+        },
+        {
+          "id": "PUB-008",
+          "tahun": 2022,
+          "jurnal": "Jurnal Literasi C",
+          "penulis": "Sari Wulandari",
+          "kata_kunci": "bibliometrika",
+          "metode": "Bibliometrika",
+          "sitasi": 25
+        },
+        {
+          "id": "PUB-009",
+          "tahun": 2023,
+          "jurnal": "Jurnal Perpustakaan A",
+          "penulis": "Dewi Rahmani",
+          "kata_kunci": "metadata",
+          "metode": "Survei",
+          "sitasi": 5
+        },
+        {
+          "id": "PUB-010",
+          "tahun": 2024,
+          "jurnal": "Jurnal Digital D",
+          "penulis": "Rafi Wijaya",
+          "kata_kunci": "literasi informasi",
+          "metode": "Analisis dokumen",
+          "sitasi": 12
+        },
+        {
+          "id": "PUB-011",
+          "tahun": 2025,
+          "jurnal": "Jurnal Informasi B",
+          "penulis": "Sari Wulandari",
+          "kata_kunci": "akses terbuka",
+          "metode": "Bibliometrika",
+          "sitasi": 19
+        },
+        {
+          "id": "PUB-012",
+          "tahun": 2020,
+          "jurnal": "Jurnal Data E",
+          "penulis": "Rina Saputra",
+          "kata_kunci": "perpustakaan digital",
+          "metode": "Survei",
+          "sitasi": 26
+        },
+        {
+          "id": "PUB-013",
+          "tahun": 2021,
+          "jurnal": "Jurnal Digital D",
+          "penulis": "Nadia Larasati",
+          "kata_kunci": "temu kembali",
+          "metode": "Studi kasus",
+          "sitasi": 6
+        },
+        {
+          "id": "PUB-014",
+          "tahun": 2022,
+          "jurnal": "Jurnal Informasi B",
+          "penulis": "Andi Prakoso",
+          "kata_kunci": "akses terbuka",
+          "metode": "Analisis dokumen",
+          "sitasi": 13
+        },
+        {
+          "id": "PUB-015",
+          "tahun": 2024,
+          "jurnal": "Jurnal Data E",
+          "penulis": "Lita Kurnia",
+          "kata_kunci": "perpustakaan digital",
+          "metode": "Bibliometrika",
+          "sitasi": 20
+        },
+        {
+          "id": "PUB-016",
+          "tahun": 2025,
+          "jurnal": "Jurnal Literasi C",
+          "penulis": "Bima Nugroho",
+          "kata_kunci": "bibliometrika",
+          "metode": "Survei",
+          "sitasi": 0
+        },
+        {
+          "id": "PUB-017",
+          "tahun": 2020,
+          "jurnal": "Jurnal Perpustakaan A",
+          "penulis": "Andi Prakoso",
+          "kata_kunci": "metadata",
+          "metode": "Studi kasus",
+          "sitasi": 7
+        },
+        {
+          "id": "PUB-018",
+          "tahun": 2021,
+          "jurnal": "Jurnal Digital D",
+          "penulis": "Lita Kurnia",
+          "kata_kunci": "literasi informasi",
+          "metode": "Analisis dokumen",
+          "sitasi": 14
+        },
+        {
+          "id": "PUB-019",
+          "tahun": 2022,
+          "jurnal": "Jurnal Literasi C",
+          "penulis": "Bima Nugroho",
+          "kata_kunci": "bibliometrika",
+          "metode": "Survei",
+          "sitasi": 21
+        },
+        {
+          "id": "PUB-020",
+          "tahun": 2023,
+          "jurnal": "Jurnal Perpustakaan A",
+          "penulis": "Dewi Rahmani",
+          "kata_kunci": "metadata",
+          "metode": "Studi kasus",
+          "sitasi": 1
+        },
+        {
+          "id": "PUB-021",
+          "tahun": 2024,
+          "jurnal": "Jurnal Digital D",
+          "penulis": "Rafi Wijaya",
+          "kata_kunci": "temu kembali",
+          "metode": "Analisis dokumen",
+          "sitasi": 8
+        },
+        {
+          "id": "PUB-022",
+          "tahun": 2020,
+          "jurnal": "Jurnal Informasi B",
+          "penulis": "Sari Wulandari",
+          "kata_kunci": "akses terbuka",
+          "metode": "Bibliometrika",
+          "sitasi": 15
+        },
+        {
+          "id": "PUB-023",
+          "tahun": 2021,
+          "jurnal": "Jurnal Data E",
+          "penulis": "Rina Saputra",
+          "kata_kunci": "perpustakaan digital",
+          "metode": "Survei",
+          "sitasi": 22
+        },
+        {
+          "id": "PUB-024",
+          "tahun": 2022,
+          "jurnal": "Jurnal Literasi C",
+          "penulis": "Nadia Larasati",
+          "kata_kunci": "temu kembali",
+          "metode": "Studi kasus",
+          "sitasi": 2
+        },
+        {
+          "id": "PUB-025",
+          "tahun": 2023,
+          "jurnal": "Jurnal Informasi B",
+          "penulis": "Sari Wulandari",
+          "kata_kunci": "akses terbuka",
+          "metode": "Analisis dokumen",
+          "sitasi": 9
+        },
+        {
+          "id": "PUB-026",
+          "tahun": 2024,
+          "jurnal": "Jurnal Data E",
+          "penulis": "Rina Saputra",
+          "kata_kunci": "literasi informasi",
+          "metode": "Bibliometrika",
+          "sitasi": 16
+        },
+        {
+          "id": "PUB-027",
+          "tahun": 2025,
+          "jurnal": "Jurnal Literasi C",
+          "penulis": "Nadia Larasati",
+          "kata_kunci": "bibliometrika",
+          "metode": "Survei",
+          "sitasi": 23
+        },
+        {
+          "id": "PUB-028",
+          "tahun": 2020,
+          "jurnal": "Jurnal Perpustakaan A",
+          "penulis": "Andi Prakoso",
+          "kata_kunci": "metadata",
+          "metode": "Analisis dokumen",
+          "sitasi": 3
+        },
+        {
+          "id": "PUB-029",
+          "tahun": 2022,
+          "jurnal": "Jurnal Digital D",
+          "penulis": "Lita Kurnia",
+          "kata_kunci": "literasi informasi",
+          "metode": "Bibliometrika",
+          "sitasi": 10
+        },
+        {
+          "id": "PUB-030",
+          "tahun": 2023,
+          "jurnal": "Jurnal Informasi B",
+          "penulis": "Bima Nugroho",
+          "kata_kunci": "bibliometrika",
+          "metode": "Survei",
+          "sitasi": 17
+        },
+        {
+          "id": "PUB-031",
+          "tahun": 2024,
+          "jurnal": "Jurnal Perpustakaan A",
+          "penulis": "Dewi Rahmani",
+          "kata_kunci": "perpustakaan digital",
+          "metode": "Studi kasus",
+          "sitasi": 24
+        },
+        {
+          "id": "PUB-032",
+          "tahun": 2025,
+          "jurnal": "Jurnal Digital D",
+          "penulis": "Rafi Wijaya",
+          "kata_kunci": "temu kembali",
+          "metode": "Analisis dokumen",
+          "sitasi": 4
+        },
+        {
+          "id": "PUB-033",
+          "tahun": 2020,
+          "jurnal": "Jurnal Informasi B",
+          "penulis": "Bima Nugroho",
+          "kata_kunci": "akses terbuka",
+          "metode": "Bibliometrika",
+          "sitasi": 11
+        },
+        {
+          "id": "PUB-034",
+          "tahun": 2021,
+          "jurnal": "Jurnal Data E",
+          "penulis": "Dewi Rahmani",
+          "kata_kunci": "perpustakaan digital",
+          "metode": "Survei",
+          "sitasi": 18
+        },
+        {
+          "id": "PUB-035",
+          "tahun": 2022,
+          "jurnal": "Jurnal Literasi C",
+          "penulis": "Rafi Wijaya",
+          "kata_kunci": "temu kembali",
+          "metode": "Studi kasus",
+          "sitasi": 25
+        },
+        {
+          "id": "PUB-036",
+          "tahun": 2024,
+          "jurnal": "Jurnal Perpustakaan A",
+          "penulis": "Sari Wulandari",
+          "kata_kunci": "metadata",
+          "metode": "Analisis dokumen",
+          "sitasi": 5
+        },
+        {
+          "id": "PUB-037",
+          "tahun": 2025,
+          "jurnal": "Jurnal Data E",
+          "penulis": "Rina Saputra",
+          "kata_kunci": "literasi informasi",
+          "metode": "Survei",
+          "sitasi": 12
+        },
+        {
+          "id": "PUB-038",
+          "tahun": 2020,
+          "jurnal": "Jurnal Literasi C",
+          "penulis": "Nadia Larasati",
+          "kata_kunci": "bibliometrika",
+          "metode": "Studi kasus",
+          "sitasi": 19
+        },
+        {
+          "id": "PUB-039",
+          "tahun": 2021,
+          "jurnal": "Jurnal Perpustakaan A",
+          "penulis": "Andi Prakoso",
+          "kata_kunci": "metadata",
+          "metode": "Analisis dokumen",
+          "sitasi": 26
+        },
+        {
+          "id": "PUB-040",
+          "tahun": 2022,
+          "jurnal": "Jurnal Digital D",
+          "penulis": "Lita Kurnia",
+          "kata_kunci": "literasi informasi",
+          "metode": "Bibliometrika",
+          "sitasi": 6
+        },
+        {
+          "id": "PUB-041",
+          "tahun": 2023,
+          "jurnal": "Jurnal Informasi B",
+          "penulis": "Nadia Larasati",
+          "kata_kunci": "akses terbuka",
+          "metode": "Survei",
+          "sitasi": 13
+        },
+        {
+          "id": "PUB-042",
+          "tahun": 2024,
+          "jurnal": "Jurnal Data E",
+          "penulis": "Andi Prakoso",
+          "kata_kunci": "perpustakaan digital",
+          "metode": "Studi kasus",
+          "sitasi": 20
+        },
+        {
+          "id": "PUB-043",
+          "tahun": 2020,
+          "jurnal": "Jurnal Digital D",
+          "penulis": "Lita Kurnia",
+          "kata_kunci": "temu kembali",
+          "metode": "Analisis dokumen",
+          "sitasi": 0
+        },
+        {
+          "id": "PUB-044",
+          "tahun": 2021,
+          "jurnal": "Jurnal Informasi B",
+          "penulis": "Bima Nugroho",
+          "kata_kunci": "akses terbuka",
+          "metode": "Bibliometrika",
+          "sitasi": 7
+        },
+        {
+          "id": "PUB-045",
+          "tahun": 2022,
+          "jurnal": "Jurnal Data E",
+          "penulis": "Dewi Rahmani",
+          "kata_kunci": "perpustakaan digital",
+          "metode": "Survei",
+          "sitasi": 14
+        },
+        {
+          "id": "PUB-046",
+          "tahun": 2023,
+          "jurnal": "Jurnal Literasi C",
+          "penulis": "Rafi Wijaya",
+          "kata_kunci": "bibliometrika",
+          "metode": "Analisis dokumen",
+          "sitasi": 21
+        },
+        {
+          "id": "PUB-047",
+          "tahun": 2024,
+          "jurnal": "Jurnal Perpustakaan A",
+          "penulis": "Sari Wulandari",
+          "kata_kunci": "metadata",
+          "metode": "Bibliometrika",
+          "sitasi": 1
+        },
+        {
+          "id": "PUB-048",
+          "tahun": 2025,
+          "jurnal": "Jurnal Digital D",
+          "penulis": "Rina Saputra",
+          "kata_kunci": "literasi informasi",
+          "metode": "Survei",
+          "sitasi": 8
+        }
+      ]
+    },
+    {
+      "id": "bradford",
+      "name": "Distribusi Jurnal Bradford",
+      "description": "20 jurnal dengan total 105 artikel, disusun untuk praktik tiga zona Bradford.",
+      "category": "Hukum bibliometrika",
+      "rows": [
+        {
+          "jurnal": "Jurnal Inti 01",
+          "artikel": 15
+        },
+        {
+          "jurnal": "Jurnal Inti 02",
+          "artikel": 12
+        },
+        {
+          "jurnal": "Jurnal Inti 03",
+          "artikel": 10
+        },
+        {
+          "jurnal": "Jurnal Inti 04",
+          "artikel": 8
+        },
+        {
+          "jurnal": "Jurnal Inti 05",
+          "artikel": 7
+        },
+        {
+          "jurnal": "Jurnal Inti 06",
+          "artikel": 6
+        },
+        {
+          "jurnal": "Jurnal Inti 07",
+          "artikel": 6
+        },
+        {
+          "jurnal": "Jurnal Inti 08",
+          "artikel": 5
+        },
+        {
+          "jurnal": "Jurnal Inti 09",
+          "artikel": 4
+        },
+        {
+          "jurnal": "Jurnal Inti 10",
+          "artikel": 4
+        },
+        {
+          "jurnal": "Jurnal Inti 11",
+          "artikel": 4
+        },
+        {
+          "jurnal": "Jurnal Inti 12",
+          "artikel": 4
+        },
+        {
+          "jurnal": "Jurnal Inti 13",
+          "artikel": 3
+        },
+        {
+          "jurnal": "Jurnal Inti 14",
+          "artikel": 3
+        },
+        {
+          "jurnal": "Jurnal Inti 15",
+          "artikel": 3
+        },
+        {
+          "jurnal": "Jurnal Inti 16",
+          "artikel": 3
+        },
+        {
+          "jurnal": "Jurnal Inti 17",
+          "artikel": 2
+        },
+        {
+          "jurnal": "Jurnal Inti 18",
+          "artikel": 2
+        },
+        {
+          "jurnal": "Jurnal Inti 19",
+          "artikel": 2
+        },
+        {
+          "jurnal": "Jurnal Inti 20",
+          "artikel": 2
+        }
+      ]
+    },
+    {
+      "id": "kunjungan",
+      "name": "Kunjungan Perpustakaan",
+      "description": "12 bulan catatan ilustratif berdasarkan jenis pengguna.",
+      "category": "Layanan perpustakaan",
+      "rows": [
+        {
+          "bulan": "Jan",
+          "mahasiswa": 83,
+          "dosen": 22,
+          "umum": 10,
+          "total": 115
+        },
+        {
+          "bulan": "Feb",
+          "mahasiswa": 95,
+          "dosen": 25,
+          "umum": 12,
+          "total": 132
+        },
+        {
+          "bulan": "Mar",
+          "mahasiswa": 100,
+          "dosen": 28,
+          "umum": 13,
+          "total": 141
+        },
+        {
+          "bulan": "Apr",
+          "mahasiswa": 90,
+          "dosen": 25,
+          "umum": 11,
+          "total": 126
+        },
+        {
+          "bulan": "Mei",
+          "mahasiswa": 118,
+          "dosen": 29,
+          "umum": 12,
+          "total": 159
+        },
+        {
+          "bulan": "Jun",
+          "mahasiswa": 113,
+          "dosen": 30,
+          "umum": 14,
+          "total": 157
+        },
+        {
+          "bulan": "Jul",
+          "mahasiswa": 120,
+          "dosen": 30,
+          "umum": 17,
+          "total": 167
+        },
+        {
+          "bulan": "Agu",
+          "mahasiswa": 130,
+          "dosen": 34,
+          "umum": 20,
+          "total": 184
+        },
+        {
+          "bulan": "Sep",
+          "mahasiswa": 125,
+          "dosen": 30,
+          "umum": 19,
+          "total": 174
+        },
+        {
+          "bulan": "Okt",
+          "mahasiswa": 141,
+          "dosen": 36,
+          "umum": 22,
+          "total": 199
+        },
+        {
+          "bulan": "Nov",
+          "mahasiswa": 135,
+          "dosen": 35,
+          "umum": 20,
+          "total": 190
+        },
+        {
+          "bulan": "Des",
+          "mahasiswa": 147,
+          "dosen": 40,
+          "umum": 24,
+          "total": 211
+        }
+      ]
+    },
+    {
+      "id": "altmetrika",
+      "name": "Dampak Digital Artikel",
+      "description": "8 artikel contoh untuk membedakan sitasi dan perhatian daring.",
+      "category": "Altmetrika",
+      "rows": [
+        {
+          "artikel": "Artikel 1",
+          "tahun": 2021,
+          "sitasi": 32,
+          "penyebutan_sosial": 12,
+          "pembaca_daring": 95
+        },
+        {
+          "artikel": "Artikel 2",
+          "tahun": 2022,
+          "sitasi": 14,
+          "penyebutan_sosial": 84,
+          "pembaca_daring": 110
+        },
+        {
+          "artikel": "Artikel 3",
+          "tahun": 2023,
+          "sitasi": 8,
+          "penyebutan_sosial": 40,
+          "pembaca_daring": 55
+        },
+        {
+          "artikel": "Artikel 4",
+          "tahun": 2024,
+          "sitasi": 28,
+          "penyebutan_sosial": 22,
+          "pembaca_daring": 105
+        },
+        {
+          "artikel": "Artikel 5",
+          "tahun": 2025,
+          "sitasi": 2,
+          "penyebutan_sosial": 115,
+          "pembaca_daring": 70
+        },
+        {
+          "artikel": "Artikel 6",
+          "tahun": 2021,
+          "sitasi": 19,
+          "penyebutan_sosial": 9,
+          "pembaca_daring": 81
+        },
+        {
+          "artikel": "Artikel 7",
+          "tahun": 2022,
+          "sitasi": 11,
+          "penyebutan_sosial": 33,
+          "pembaca_daring": 90
+        },
+        {
+          "artikel": "Artikel 8",
+          "tahun": 2023,
+          "sitasi": 4,
+          "penyebutan_sosial": 62,
+          "pembaca_daring": 50
+        }
+      ]
+    }
+  ]
+};
+
+</script>
+<script>
+/*
+ * RuangData – Laboratorium Informetrika 16 Pertemuan
+ * GitHub Pages-compatible static web app. No accounts, no server, no analytics.
+ * Learning progress is stored only in this browser and can be exported by the student.
+ */
+(() => {
+  'use strict';
+  const SOURCE = window.RUANGDATA_CONTENT;
+  if (!SOURCE) {
+    document.getElementById('app').textContent = 'Konten tidak dapat dimuat. Pastikan content.js berada satu folder dengan index.html.';
+    return;
+  }
+
+  const KEY = 'ruangdata-informetrika-2026-v1';
+  const NEW_STATE = () => ({ schema: 1, name: 'Mahasiswa', sessions: {}, createdAt: new Date().toISOString() });
+  const h = (value) => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const nfmt = n => Number(n).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+  const iconPaths = {
+    home:'<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-6h6v6"/>',
+    book:'<path d="M4 19.5V4.8A2 2 0 0 1 6 3h14v17H6a2 2 0 0 0 0 4h14"/><path d="M4 19.5A2 2 0 0 1 6 18h14"/>',
+    database:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/>',
+    chart:'<path d="M3 3v18h18"/><path d="m6 16 5-5 4 3 5-8"/>',
+    flask:'<path d="M9 3h6M10 3v7l-6.5 9a2 2 0 0 0 1.6 3h13.8a2 2 0 0 0 1.6-3L14 10V3"/><path d="M7 16h10"/>',
+    trophy:'<path d="M8 21h8m-4-4v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v2a4 4 0 0 0 4 4M17 6h3v2a4 4 0 0 1-4 4"/>',
+    info:'<circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7h.01"/>',
+    arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>',
+    check:'<path d="m4 12 5 5L20 6"/>',
+    down:'<path d="m6 9 6 6 6-6"/>',
+    download:'<path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/>',
+    upload:'<path d="M12 21V9M7 14l5-5 5 5M4 3h16v5"/>',
+    menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+    reset:'<path d="M3 12a9 9 0 1 0 3-7M3 3v6h6"/>',
+    clipboard:'<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4h6v-2H9zm-1 7h8m-8 5h6"/>',
+    user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'
+  };
+  const ico = (key, size=18) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths[key] || iconPaths.info}</svg>`;
+  const byNo = no => SOURCE.sessions.find(s => s.no === Number(no));
+  const defaultData = SOURCE.datasets;
+  const app = document.getElementById('app');
+  let state;
+  try {
+    const stored = JSON.parse(localStorage.getItem(KEY));
+    state = stored && typeof stored === 'object' && stored.schema === 1 && stored.sessions && typeof stored.sessions === 'object' ? stored : NEW_STATE();
+  } catch { state = NEW_STATE(); }
+  let customDataset = null;
+  let datasetId = SOURCE.datasets[0].id;
+  let graphGroup = 'tahun', graphNumeric = 'sitasi', graphMethod='count', graphType='bar';
+  let formulaTab = 'bradford';
+  let formulaParams = { bradford:'15,12,10,8,7,6,6,5,4,4,4,4,3,3,3,3,2,2,2,2', c:'40', exponent:'2', k:'100', citations:'12,8,5,3,1' };
+  let retaking = new Set();
+  let currentRoute = '';
+  let toastTimer = null;
+  const storageOK = (() => { try { localStorage.setItem('__rd_test','ok');localStorage.removeItem('__rd_test');return true; } catch {return false;} })();
+  const save = () => { if (storageOK) {try { localStorage.setItem(KEY,JSON.stringify(state)); } catch {toast('Penyimpanan lokal penuh; ekspor portofolio untuk cadangan.');}} };
+  function wk(no) {
+    if (!state.sessions[no] || typeof state.sessions[no] !== 'object') state.sessions[no] = {note:'',checked:{},attempts:[]};
+    const x=state.sessions[no];
+    if (!Array.isArray(x.attempts)) x.attempts=[];
+    if (!x.checked || typeof x.checked !== 'object') x.checked={};
+    if (typeof x.note !== 'string') x.note='';
+    return x;
+  }
+  const latest = no => wk(no).attempts.at(-1);
+  const done = no => wk(no).attempts.length>0;
+  const doneCount = () => SOURCE.sessions.filter(s=>done(s.no)).length;
+  const meanScore = () => {
+    const scored=SOURCE.sessions.map(s=>latest(s.no)).filter(Boolean);
+    return scored.length ? Math.round(scored.reduce((a,x)=>a+x.score,0)/scored.length) : null;
+  };
+  const pct = () => Math.round(100*doneCount()/16);
+  function toast(msg) {
+    document.querySelectorAll('.toast').forEach(t=>t.remove());
+    const el=document.createElement('div');el.className='toast';el.role='status';el.textContent=msg;document.body.append(el);
+    clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.remove(),3400);
+  }
+  function navigate(route) {
+    const hash='#/'+route.replace(/^\/+|\/+$/g,'');
+    if(location.hash===hash) render(); else location.hash=hash;
+  }
+  function current() {
+    let part=decodeURIComponent(location.hash.replace(/^#\/?/,'')).trim();
+    if (!part) part='dashboard';
+    if(!/^(dashboard|pertemuan|laboratorium|portofolio|panduan|pertemuan\/\d+|kalkulator(?:\/(?:bradford|lotka|zipf|citation))?)$/.test(part)) part='dashboard';
+    return part;
+  }
+  const navItems = [
+    ['dashboard','Ringkasan','home'],['pertemuan','16 Pertemuan','book'],['laboratorium','Laboratorium Data','chart'],
+    ['kalkulator','Kalkulator Rumus','flask'],['portofolio','Portofolio Belajar','trophy'],['panduan','Panduan & GitHub','info']
+  ];
+  function shell(inner, title) {
+    let selected=currentRoute.split('/')[0];
+    const side=navItems.map(([route,label,icon])=>`<button class="nav-link ${selected===route?'active':''}" data-nav="${route}" aria-current="${selected===route?'page':'false'}">${ico(icon)}<span>${h(label)}</span></button>`).join('');
+    return `<aside class="sidebar" id="sidebar">
+        <a class="brand" href="#/dashboard"><span class="brand-logo">R<span>.</span></span><span><b>RuangData</b><small>Laboratorium Informetrika</small></span></a>
+        <div class="side-label">Ruang kerja</div><nav class="side-nav" aria-label="Navigasi utama">${side}</nav>
+        <hr class="side-rule"><div class="side-label">KELAS AKTIF</div>
+        <div class="side-course"><span class="tag">SEMESTER 16 PERTEMUAN</span><strong>Informetrika · Ilmu Perpustakaan</strong><p>${doneCount()} dari 16 asesmen diselesaikan</p><div class="tiny-progress"><span style="width:${pct()}%"></span></div></div>
+        <div class="sidebar-bottom">Data latihan ilustratif · Progres disimpan hanya di browser ini.</div>
+      </aside><div class="main-area"><header class="topbar">
+        <div class="crumb"><button class="mobile-toggle" id="mobileMenu" aria-label="Buka menu">${ico('menu',21)}</button><span>RuangData</span><i>/</i><span>${h(title)}</span></div>
+        <div class="top-actions"><span class="top-chip">Tahun Ajaran 2026/2027</span><button class="user-chip" id="editName" title="Atur nama panggilan">${h((state.name||'M').trim().charAt(0).toUpperCase())}</button></div>
+      </header><main id="maincontent" class="content">${inner}</main><footer class="footer"><span>RuangData · Praktikum Informetrika 16 Pertemuan</span><span>Latihan mandiri · Tidak terhubung ke server penilaian</span></footer></div>`;
+  }
+  const heading=(k,title,desc,actions='')=>`<div class="page-heading"><div><div class="eyebrow">${h(k)}</div><h1>${h(title)}</h1><p>${h(desc)}</p></div>${actions}</div>`;
+  const badge=(text,style='')=>`<span class="pill ${style}">${h(text)}</span>`;
+  function heroSVG() {
+    return `<svg viewBox="0 0 500 290" class="hero-art" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+       <g fill="none" stroke="#7c9c86" stroke-width="1.3" opacity=".38"><path d="M30 200 120 60 225 140 355 75 480 180 370 260 225 140 130 245 30 200"/><path d="M120 60 355 75 370 260 130 245 480 180M70 125 225 140 305 20 355 75 415 120"/></g>
+       <g fill="#d0ae6d"><circle cx="120" cy="60" r="7"/><circle cx="355" cy="75" r="5"/><circle cx="480" cy="180" r="6"/><circle cx="130" cy="245" r="6"/></g>
+       <g fill="#b8dfc4"><circle cx="30" cy="200" r="4"/><circle cx="225" cy="140" r="7"/><circle cx="370" cy="260" r="4"/><circle cx="305" cy="20" r="4"/><circle cx="415" cy="120" r="3"/></g></svg>`;
+  }
+  function dash() {
+    const next = SOURCE.sessions.find(s=>!done(s.no)) || SOURCE.sessions[15];
+    const latestList=SOURCE.sessions.filter(s=>done(s.no)).slice(-4).reverse();
+    return `<div class="hero"><div class="herotxt"><div class="hero-kicker">LABORATORIUM DATA · INFORMETRIKA</div><h1>Dari data menjadi pemahaman yang bermakna.</h1><p>Belajar membaca pola publikasi, memilih visualisasi, menghitung indikator, dan menyusun kesimpulan berbasis bukti — bertahap selama 16 pertemuan.</p><div class="btn-row"><button class="btn primary" data-nav="pertemuan/${next.no}">Lanjut Pertemuan ${next.no} ${ico('arrow')}</button><button class="btn" data-nav="laboratorium">Jelajahi Dataset</button></div></div>${heroSVG()}</div>
+      <div class="stat-grid"><div class="card stat-card"><span class="stat-label">Pertemuan tersedia</span><div class="stat-number">16 <small style="font-size:14px;color:#9aa99b">minggu</small></div><span class="stat-meta">Termasuk UTS dan UAS</span></div>
+      <div class="card stat-card"><span class="stat-label">Asesmen dikerjakan</span><div class="stat-number">${doneCount()} <small style="font-size:14px;color:#9aa99b">/ 16</small></div><span class="stat-meta">Disimpan di perangkat ini</span></div>
+      <div class="card stat-card"><span class="stat-label">Rerata kuis terakhir</span><div class="stat-number">${meanScore()===null?'—':meanScore()}<small style="font-size:14px;color:#9aa99b">${meanScore()===null?'':' / 100'}</small></div><span class="stat-meta">Bukan nilai resmi kuliah</span></div>
+      <div class="card stat-card"><span class="stat-label">Dataset contoh</span><div class="stat-number">${defaultData.length}</div><span class="stat-meta">Semua merupakan data latihan</span></div></div>
+      <div class="grid-two"><section class="card pad"><div class="section-header"><div><h2>Rencana belajar satu semester</h2><p>Belajar secara bertahap, dari korpus hingga proyek informetrika</p></div><button class="btn mini" data-nav="pertemuan">Lihat semua ${ico('arrow')}</button></div>
+      <div class="week-list">${SOURCE.sessions.slice(0,7).map(s=>weekRow(s)).join('')}</div></section>
+      <section class="card pad"><div class="section-header"><div><h2>Progres belajarmu</h2><p>${h(state.name)}, lanjutkan dari sesi yang terakhir</p></div>${badge(pct()+'%')}</div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct()}%"></div></div>
+      <p class="help" style="margin:11px 0 24px">${doneCount()} dari 16 asesmen telah dikerjakan di perangkat ini.</p>
+      <div class="section-header"><h3 style="margin:0">Lanjutan yang disarankan</h3></div>
+      ${weekRow(next)}
+      <div class="notice"><strong>Seluruh dataset adalah contoh pembelajaran.</strong><p>Skor awal, grafik, dan riwayat tidak menggambarkan hasil mahasiswa asli. Nilai baru muncul setelah kamu benar-benar mengerjakan kuis.</p></div>
+      <div class="section-header"><h3 style="margin:0">Aktivitas tersimpan</h3></div>
+      ${latestList.length ? latestList.map(s=>`<div style="border-bottom:1px solid var(--stroke);padding:12px 0"><strong style="font-size:12px">Pertemuan ${s.no} · ${h(s.title)}</strong><div class="help">Skor terakhir ${latest(s.no).score}/100 · ${new Date(latest(s.no).at).toLocaleDateString('id-ID')}</div></div>`).join('') : '<p class="help">Belum ada aktivitas. Mulailah Pertemuan 1.</p>'}
+      </section></div>
+      <div class="grid-two"><section class="card pad"><div class="section-header"><h2>Alat praktik tersedia</h2></div><div class="tool-grid"><button class="dataset-card" data-nav="laboratorium"><span class="dataset-icon">${ico('chart')}</span><strong>Eksplorasi Visual</strong><small>Dataset, filter, grafik, dan ekspor CSV</small></button><button class="dataset-card" data-nav="kalkulator"><span class="dataset-icon">${ico('flask')}</span><strong>Rumus Informetrika</strong><small>Bradford, Lotka, Zipf, dan h-index</small></button></div></section>
+      <section class="card pad"><div class="section-header"><h2>Cara mengumpulkan tugas</h2></div><p style="color:#6d7f70;font-size:12.5px;line-height:1.9">Kerjakan aktivitas, simpan catatan belajar, lalu ekspor portofolio dalam format JSON/CSV. Unggah berkas dan laporan praktik ke SIPEJAR sesuai arahan dosen.</p><button class="btn light" data-nav="portofolio">Buka portofolio ${ico('arrow')}</button></section></div>`;
+  }
+  function weekRow(s) {
+    const result=latest(s.no);
+    return `<button class="week-row" data-nav="pertemuan/${s.no}"><span class="week-num">${String(s.no).padStart(2,'0')}</span><span><strong>${h(s.title)}</strong><small>${h(s.tag)} · ${s.quiz.length} soal</small></span><span class="right">${result?badge(result.score+'/100'):ico('arrow')}</span></button>`;
+  }
+  function listWeeks() {
+    return `${heading('Rencana pembelajaran','16 Pertemuan Informetrika','Urutan praktik terstruktur untuk kelas Ilmu Perpustakaan. Setiap pertemuan memuat materi, langkah latihan, kuis, dan ruang refleksi.',`<button class="btn primary" data-nav="laboratorium">${ico('chart')} Buka Laboratorium</button>`)}
+    <div class="notice"><strong>Penggunaan di kelas:</strong> Pertemuan 8 adalah UTS, pertemuan 16 adalah UAS. Kuis di situs ini merupakan latihan mandiri; dosen tetap menentukan instrumen dan penilaian resmi.</div>
+    <div class="program-grid">${SOURCE.sessions.map(s=>`<article class="card program-card ${s.exam?'exam':''}"><span class="number">PERTEMUAN ${String(s.no).padStart(2,'0')}</span><h3>${h(s.title)}</h3><p>${h(s.description)}</p><footer><span>${done(s.no)?badge('Selesai'):badge(s.tag,s.exam?'gold':'gray')}</span><button class="btn mini" data-nav="pertemuan/${s.no}">${done(s.no)?'Tinjau':'Mulai'} ${ico('arrow')}</button></footer></article>`).join('')}</div>`;
+  }
+  function sessionPage(no) {
+    const s=byNo(no); if(!s) return listWeeks();
+    const w=wk(no), att=latest(no), showResult=!!att && !retaking.has(no);
+    const obj=s.objectives.map(x=>`<li>${h(x)}</li>`).join('');
+    const textSections=s.sections.map((x,i)=>`<div class="lesson-section"><h3>${String(i+1).padStart(2,'0')} · ${h(x.title)}</h3><p>${h(x.body)}</p></div>`).join('');
+    const checklist=s.steps.map((txt,i)=>`<label class="step ${w.checked[i]?'checked':''}"><input type="checkbox" data-step="${i}" data-week="${s.no}" ${w.checked[i]?'checked':''}><span class="step-text">${h(txt)}</span></label>`).join('');
+    const quizForm=s.quiz.map((q,qi)=>{
+      const selected=showResult ? att.answers[qi] : -1;
+      return `<div class="quiz-question"><h3>${qi+1}. ${h(q.question)}</h3><div class="quiz-choices">${q.options.map((op,oi)=>`<label class="quiz-choice ${showResult?(oi===q.correct?'correct':(selected===oi&&oi!==q.correct?'wrong':'')):''}"><input type="radio" name="q-${qi}" value="${oi}" ${showResult?'disabled':''} ${selected===oi?'checked':''}><span>${h(op)}</span></label>`).join('')}</div>${showResult?`<div class="quiz-feedback"><b>${selected===q.correct?'Tepat.':'Pembahasan:'}</b> ${h(q.explanation)}</div>`:''}</div>`;
+    }).join('');
+    const prev=no>1?`<button class="btn ghost" data-nav="pertemuan/${no-1}">← Pertemuan sebelumnya</button>`:'';
+    const next=no<16?`<button class="btn light" data-nav="pertemuan/${no+1}">Pertemuan berikutnya ${ico('arrow')}</button>`:`<button class="btn light" data-nav="portofolio">Lihat portofolio ${ico('arrow')}</button>`;
+    return `${heading('Modul / Pertemuan '+String(no).padStart(2,'0'),s.title,s.description,`<button class="btn" data-nav="pertemuan">${ico('book')} Daftar pertemuan</button>`)}
+      <div class="btn-row" style="margin-bottom:17px">${badge(s.tag,s.exam?'gold':'')} ${badge(s.quiz.length+' soal kuis','gray')} ${att?badge('Skor terakhir '+att.score+'/100',''):badge('Belum dinilai','gray')}</div>
+      <div class="cols-two"><div>
+        <section class="card pad" style="margin-bottom:18px"><div class="section-header"><h2>Materi inti</h2></div><div class="lesson-sections">${textSections}</div></section>
+        <section class="card pad" style="margin-bottom:18px"><div class="section-header"><h2>Langkah praktik</h2>${badge(Object.values(w.checked).filter(Boolean).length+'/'+s.steps.length+' langkah')}</div><div class="steps">${checklist}</div><div style="margin-top:16px"><button class="btn mini" data-nav="${s.tool==='explorer'?'laboratorium':'kalkulator/'+s.tool}">${ico('flask')} ${s.tool==='explorer'?'Buka Laboratorium Data':'Buka kalkulator terkait'}</button></div></section>
+        <section class="card pad" id="quizSection"><div class="section-header"><div><h2>${s.exam?'Asesmen '+(s.no===8?'UTS':'UAS'):'Kuis formatif'}</h2><p>${s.quiz.length} pertanyaan · Pilih satu jawaban setiap pertanyaan</p></div></div>
+          ${showResult?`<div class="quiz-result"><b>${att.score} / 100</b><p>Benar ${att.correct} dari ${s.quiz.length} · Dikerjakan ${new Date(att.at).toLocaleString('id-ID')} · Percobaan ke-${w.attempts.length}</p><button class="btn mini" data-retake="${no}">${ico('reset')} Kerjakan ulang</button></div>`:'<div class="notice gold">Jawaban baru dinilai setelah tombol <strong>Periksa jawaban</strong> ditekan. Pembahasan muncul setelahnya.</div>'}
+          <div id="quizQuestions" data-quiz-week="${no}">${quizForm}</div>
+          ${!showResult?`<button class="btn primary" data-submit-quiz="${no}">${ico('check')} Periksa jawaban</button>`:''}</section>
+      </div><div>
+        <section class="card pad" style="margin-bottom:18px"><div class="section-header"><h2>Tujuan pembelajaran</h2></div><ol class="objective-list">${obj}</ol></section>
+        <section class="card pad" style="margin-bottom:18px"><div class="section-header"><h2>Tugas dan luaran</h2></div><div class="assignment"><strong>Latihan utama</strong><p>${h(s.assignment)}</p><strong>Yang dikumpulkan</strong><p>${h(s.deliverable)}</p></div><h3 style="margin-top:18px">Kriteria penilaian</h3><ul class="simple-list">${s.criteria.map(x=>`<li>${h(x)}</li>`).join('')}</ul>${s.reference?`<div class="notice"><b>Contoh acuan:</b> ${h(s.reference)}</div>`:''}</section>
+        <section class="card pad"><div class="section-header"><h2>Catatan & refleksi</h2></div><label class="field-label" for="reflection">Apa yang kamu pahami dan masih perlu dipelajari?</label><textarea id="reflection" data-note="${no}" placeholder="Tulis hasil praktik, temuan, pertanyaan, atau tautan tugasmu (tanpa data pribadi sensitif).">${h(w.note)}</textarea><p class="help">Tersimpan di browser setelah teks diubah. Ekspor portofolio sebelum menghapus data browser.</p></section>
+      </div></div><div class="btn-row" style="margin-top:20px;justify-content:space-between">${prev}${next}</div>`;
+  }
+
+  function allDatasets() {return customDataset ? [...defaultData,customDataset] : defaultData;}
+  function activeDataset(){return allDatasets().find(d=>d.id===datasetId) || defaultData[0];}
+  function isNumericField(rows, key) { const vals=rows.map(r=>r[key]).filter(x=>String(x??'').trim()!=='').slice(0,20);return vals.length>0 && vals.every(v=>Number.isFinite(Number(String(v).trim().replace(/\s/g,'')))); }
+  function chartInfo(d) {
+    const rows=d.rows || [];
+    const fields=Object.keys(rows[0]||{});
+    const numericFields=fields.filter(f=>isNumericField(rows,f));
+    const groupFields=fields.filter(f=>new Set(rows.slice(0,100).map(r=>String(r[f]??''))).size>1);
+    if(!groupFields.includes(graphGroup)) graphGroup=groupFields.find(f=>!numericFields.includes(f)) || fields[0] || '';
+    if(!numericFields.includes(graphNumeric)) graphNumeric=numericFields[0] || '';
+    const grouped=new Map();
+    for (const row of rows) {
+      const group=String(row[graphGroup]??'—').trim() || '(Kosong)';
+      if (!grouped.has(group)) grouped.set(group,[]);
+      grouped.get(group).push(row);
+    }
+    let entries=[...grouped.entries()].map(([label,items])=>{
+      let vals=items.map(x=>Number(String(x[graphNumeric]??'').trim())).filter(Number.isFinite);
+      const value=graphMethod==='count'?items.length:graphMethod==='mean'?(vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0):vals.reduce((a,b)=>a+b,0);
+      return {label,value,count:items.length};
+    });
+    const timeLabels=['jan','feb','mar','apr','mei','jun','jul','agu','sep','okt','nov','des'];
+    if(['tahun','year'].includes(graphGroup.toLowerCase())) entries.sort((a,b)=>Number(a.label)-Number(b.label));
+    else if(graphGroup.toLowerCase()==='bulan') entries.sort((a,b)=>timeLabels.indexOf(a.label.toLowerCase().slice(0,3))-timeLabels.indexOf(b.label.toLowerCase().slice(0,3)));
+    else entries.sort((a,b)=>b.value-a.value);
+    entries=entries.slice(0,12);
+    return {fields,numericFields,groupFields,entries,rows};
+  }
+  function graphSVG(entries,mode) {
+    if(!entries.length) return '<div class="notice gold">Tidak ada nilai untuk divisualisasikan pada pilihan ini.</div>';
+    const max=Math.max(1,...entries.map(x=>x.value));
+    const L=53,R=715,T=24,B=221,span=R-L;
+    const grid=[0,.25,.5,.75,1].map(f=>{
+      const yy=B-(B-T)*f;
+      return `<line x1="${L}" y1="${yy.toFixed(1)}" x2="${R}" y2="${yy.toFixed(1)}" stroke="#e7eee6"/><text x="${L-8}" y="${(yy+4).toFixed(1)}" font-size="10" fill="#87998b" text-anchor="end">${h(nfmt(max*f))}</text>`;
+    }).join('');
+    const n=entries.length; const width=span/Math.max(n,1);
+    let shapes='';
+    if(mode==='line') {
+      const pts=entries.map((item,i)=>({x:L+width*(i+.5),y:B-(B-T)*item.value/max}));
+      shapes+=`<polyline fill="none" stroke="#386c51" stroke-width="3.1" stroke-linejoin="round" points="${pts.map(p=>`${p.x},${p.y}`).join(' ')}"/>`;
+      shapes+=pts.map((p,i)=>`<circle cx="${p.x}" cy="${p.y}" r="5" fill="#386c51" stroke="#fff" stroke-width="2"><title>${h(entries[i].label)}: ${h(nfmt(entries[i].value))}</title></circle>`).join('');
+    } else {
+      shapes+=entries.map((item,i)=>{
+        const bw=Math.min(45,width*.61), x=L+width*(i+.5)-bw/2;
+        const ht=Math.max(item.value===0?0:2,(B-T)*item.value/max),y=B-ht;
+        return `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${bw.toFixed(2)}" height="${ht.toFixed(2)}" rx="4" fill="${i%3===0?'#32654b':'#8eae92'}"><title>${h(item.label)}: ${h(nfmt(item.value))}</title></rect>`;
+      }).join('');
+    }
+    const labels=entries.map((v,i)=>`<text x="${(L+width*(i+.5)).toFixed(2)}" y="245" text-anchor="middle" font-size="${n>8?9:10}" fill="#667c6e">${h(v.label.length>11?v.label.slice(0,10)+'…':v.label)}</text>`).join('');
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 263" role="img" aria-label="Grafik ${mode==='line'?'garis':'batang'} dari dataset terpilih"><g>${grid}${shapes}${labels}</g></svg>`;
+  }
+  function lab() {
+    const d=activeDataset(), info=chartInfo(d), cols=info.fields;
+    const options=allDatasets().map(x=>`<button class="dataset-card ${x.id===datasetId?'active':''}" data-dataset="${h(x.id)}" aria-pressed="${x.id===datasetId}"><span class="dataset-icon">${ico('database')}</span><strong>${h(x.name)}</strong><small>${h(x.description)}</small><small>${x.rows.length} baris · ${Object.keys(x.rows[0]||{}).length} kolom</small></button>`).join('');
+    const select=(items,current)=>items.map(k=>`<option value="${h(k)}" ${k===current?'selected':''}>${h(k)}</option>`).join('');
+    let missing=info.rows.reduce((a,r)=>a+cols.filter(f=>r[f]===undefined||String(r[f]??'').trim()==='').length,0);
+    const table=info.rows.slice(0,10).map(row=>`<tr>${cols.map(f=>`<td>${h(row[f]??'')}</td>`).join('')}</tr>`).join('');
+    return `${heading('Laboratorium data','Eksplorasi Visual','Gunakan dataset contoh untuk mempraktikkan tabel, ringkasan statistik, grafik, dan ekspor CSV. Kamu juga dapat membuka berkas CSV sendiri di browser.')}
+    <div class="notice"><b>Data dan privasi:</b> seluruh dataset bawaan merupakan data sintetis untuk latihan. Berkas CSV yang dipilih diproses langsung di browser, <b>tidak dikirim ke server</b>, dan hilang saat halaman di-refresh.</div>
+    <div class="grid-two" style="align-items:start"><section class="card pad"><div class="section-header"><div><h2>Koleksi data</h2><p>Pilih dataset yang ingin dipelajari</p></div><button class="btn mini" id="importCsv">${ico('upload')} Impor CSV lokal</button></div><div class="dataset-grid">${options}</div></section>
+    <section class="card pad"><div class="section-header"><div><h2>Ringkasan dataset</h2><p>${h(d.name)}</p></div>${badge(d.id==='custom'?'Data lokal':'Data latihan')}</div>
+    <div class="stat-inline"><span><b>${info.rows.length}</b> baris</span><span><b>${cols.length}</b> kolom</span><span><b>${info.numericFields.length}</b> variabel numerik</span><span><b>${missing}</b> nilai kosong</span></div>
+    <p style="font-size:12.3px;color:var(--muted);line-height:1.9;margin:20px 0">${h(d.description)}</p><button class="btn light" id="downloadData">${ico('download')} Unduh CSV dataset</button></section></div>
+    <section class="card pad" style="margin-top:19px"><div class="section-header"><div><h2>Atur visualisasi</h2><p>Grafik dihitung dari data yang sedang dipilih</p></div>${badge(graphMethod==='count'?'Frekuensi':graphMethod==='sum'?'Penjumlahan':'Rerata')}</div>
+    <div class="lab-toolbar"><div class="control"><label for="graphGroup">Kelompokkan menurut</label><select id="graphGroup">${select(info.groupFields,graphGroup)}</select></div>
+    <div class="control"><label for="graphMethod">Ukuran ringkasan</label><select id="graphMethod"><option value="count" ${graphMethod==='count'?'selected':''}>Jumlah rekaman</option><option value="sum" ${graphMethod==='sum'?'selected':''}>Jumlah nilai</option><option value="mean" ${graphMethod==='mean'?'selected':''}>Rata-rata nilai</option></select></div>
+    <div class="control"><label for="graphNumeric">Kolom numerik</label><select id="graphNumeric">${select(info.numericFields,graphNumeric)}</select></div>
+    <div class="control"><label for="graphType">Bentuk grafik</label><select id="graphType"><option value="bar" ${graphType==='bar'?'selected':''}>Batang</option><option value="line" ${graphType==='line'?'selected':''}>Garis</option></select></div></div>
+    <div style="margin:17px 0"><button class="btn primary" id="applyGraph">${ico('chart')} Terapkan visualisasi</button></div>
+    <div class="graph-frame">${graphSVG(info.entries,graphType)}</div><p class="footnote">Menampilkan maksimal 12 kategori. Gunakan grafik garis terutama untuk data berurutan (misalnya tahun/bulan). Grafik tidak membuktikan hubungan sebab-akibat.</p>
+    <div class="stat-inline">${info.entries.slice(0,6).map(x=>`<span>${h(x.label)}: <b>${h(nfmt(x.value))}</b></span>`).join('')}</div></section>
+    <section class="card pad" style="margin-top:19px"><div class="section-header"><div><h2>Pratinjau data</h2><p>10 baris pertama, sesuai urutan tabel sumber</p></div></div><div class="data-table-wrap"><table><thead><tr>${cols.map(x=>`<th>${h(x)}</th>`).join('')}</tr></thead><tbody>${table}</tbody></table></div></section>`;
+  }
+  const parseNumbers=(text,positiveOnly=false)=>{
+    const parsed=String(text).split(/[;,\s]+/).map(x=>x.trim()).filter(Boolean).map(Number);
+    if(!parsed.length || parsed.some(x=>!Number.isFinite(x)||x<0||(positiveOnly&&x<=0))) throw Error('Gunakan angka valid, dipisahkan dengan koma atau spasi.');
+    return parsed;
+  };
+  function getFormulaOutput() {
+    try {
+      if(formulaTab==='bradford') {
+        const counts=parseNumbers(formulaParams.bradford,true).sort((a,b)=>b-a);
+        if(counts.length<3) throw Error('Masukkan minimal tiga jumlah artikel jurnal.');
+        const total=counts.reduce((a,b)=>a+b,0);
+        let start=0,remaining=total;const zones=[];
+        for(let zi=0;zi<2;zi++) {
+          const goal=remaining/(3-zi);let sum=0,chosen=start+1;
+          const maxend=counts.length-(2-zi);
+          let best=Infinity,bestSum=-Infinity;
+          for(let k=start;k<maxend;k++){
+            sum+=counts[k];const diff=Math.abs(sum-goal);
+            if(diff<best-1e-9 || (Math.abs(diff-best)<1e-9 && sum>bestSum)){best=diff;bestSum=sum;chosen=k+1;}
+          }
+          const subset=counts.slice(start,chosen);
+          const articles=subset.reduce((a,b)=>a+b,0);
+          zones.push({zone:zi+1,journals:subset.length,articles});
+          start=chosen;remaining-=articles;
+        }
+        const last=counts.slice(start);zones.push({zone:3,journals:last.length,articles:last.reduce((a,b)=>a+b,0)});
+        return `<p><span class="formula-big">${total}</span> artikel · ${counts.length} jurnal</p><p>Target teoritis per zona ≈ <b>${nfmt(total/3)} artikel</b>.</p><div class="data-table-wrap"><table><thead><tr><th>Zona</th><th>Jumlah jurnal</th><th>Jumlah artikel</th></tr></thead><tbody>${zones.map(z=>`<tr><td>${z.zone}</td><td>${z.journals}</td><td>${z.articles}</td></tr>`).join('')}</tbody></table></div><p class="help">Pembagian menggunakan batas kumulatif terdekat dan menjaga minimal satu jurnal di setiap zona. Ini pendekatan latihan; hasil bisa berbeda bila metode batas zona diubah.</p>`;
+      }
+      if(formulaTab==='lotka') {
+        const C=Number(formulaParams.c),exponent=Number(formulaParams.exponent);
+        if(!Number.isFinite(C)||C<=0||!Number.isFinite(exponent)||exponent<=0||exponent>10) throw Error('C dan eksponen harus berupa angka positif yang wajar.');
+        const rows=Array.from({length:8},(_,i)=>{const n=i+1;return `<tr><td>${n}</td><td>${nfmt(C/Math.pow(n,exponent))}</td></tr>`}).join('');
+        return `<p class="formula-big">f(n) = C / n<sup>${h(exponent)}</sup></p><p>Contoh prediksi jumlah penulis berdasarkan C = ${nfmt(C)}. Hasil prediksi dapat berupa desimal; data nyata adalah bilangan bulat.</p><div class="data-table-wrap"><table><thead><tr><th>Jumlah artikel (n)</th><th>Prediksi jumlah penulis</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+      }
+      if(formulaTab==='zipf') {
+        const K=Number(formulaParams.k);if(!Number.isFinite(K)||K<=0) throw Error('Frekuensi peringkat pertama harus positif.');
+        const rows=Array.from({length:10},(_,i)=>`<tr><td>${i+1}</td><td>${nfmt(K/(i+1))}</td><td>${nfmt(K)}</td></tr>`).join('');
+        return `<p class="formula-big">f(r) ≈ K / r</p><p>Simulasi frekuensi menurut rank; K adalah frekuensi kata peringkat satu.</p><div class="data-table-wrap"><table><thead><tr><th>Rank (r)</th><th>Prediksi f(r)</th><th>r × f(r)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+      }
+      const citations=parseNumbers(formulaParams.citations).sort((a,b)=>b-a);
+      const hv=citations.filter((x,i)=>x>=i+1).length;
+      return `<p><span class="formula-big">h-index = ${hv}</span></p><p>Ditemukan ${citations.length} artikel dengan urutan sitasi: <b>${citations.join(', ')}</b>.</p><div class="data-table-wrap"><table><thead><tr><th>Peringkat artikel</th><th>Sitasi</th><th>Memenuhi sitasi ≥ peringkat?</th></tr></thead><tbody>${citations.slice(0,18).map((x,i)=>`<tr><td>${i+1}</td><td>${x}</td><td>${x>=i+1?'Ya':'Tidak'}</td></tr>`).join('')}</tbody></table></div><p class="help">h-index mengukur gabungan jumlah publikasi dan sitasi; bukan bukti mutu individual tanpa konteks.</p>`;
+    }catch(err){return `<div class="notice gold">${h(err.message)}</div>`;}
+  }
+  function calc() {
+    const names=[['bradford','Hukum Bradford'],['lotka','Hukum Lotka'],['zipf','Hukum Zipf'],['citation','h-index Sitasi']];
+    const field= formulaTab==='bradford'?`<label class="field-label" for="paramBradford">Jumlah artikel per jurnal (boleh belum urut)</label><textarea id="paramBradford" rows="3" style="min-height:76px">${h(formulaParams.bradford)}</textarea>`:
+      formulaTab==='lotka'?`<div class="lab-toolbar"><div class="control"><label for="paramC">C (jumlah penulis satu artikel)</label><input type="number" id="paramC" value="${h(formulaParams.c)}" min="0" step="1"></div><div class="control"><label for="paramExp">Eksponen</label><input type="number" id="paramExp" value="${h(formulaParams.exponent)}" min="0.1" max="10" step="0.1"></div></div>`:
+      formulaTab==='zipf'?`<label class="field-label" for="paramK">Frekuensi kata peringkat pertama (K)</label><input id="paramK" type="number" min="1" value="${h(formulaParams.k)}">`:
+      `<label class="field-label" for="paramCitations">Sitasi tiap artikel (boleh belum urut)</label><textarea id="paramCitations" rows="3" style="min-height:76px">${h(formulaParams.citations)}</textarea>`;
+    return `${heading('Laboratorium rumus','Kalkulator Informetrika','Latihan penghitungan langsung yang dapat diubah parameternya. Data contoh, bukan hasil penelitian nyata.')}
+      <div class="card pad"><div class="formula-grid">${names.map(([id,title])=>`<button class="formula-tab ${formulaTab===id?'active':''}" data-formula="${id}">${h(title)}</button>`).join('')}</div>
+      <div style="margin-top:23px">${field}</div><p class="help">Gunakan bilangan bulat untuk data hitungan; pada Lotka kamu dapat mengganti eksponen. Gunakan koma atau spasi sebagai pemisah daftar.</p>
+      <button class="btn primary" id="computeFormula">${ico('flask')} Hitung & tampilkan hasil</button><div class="formula-output" id="formulaOutput">${getFormulaOutput()}</div></div>
+      <div class="notice"><b>Untuk laporan:</b> tuliskan rumus, sumber data, keputusan pembersihan, dan batasan interpretasi. Contoh kalkulator tidak menggantikan analisis empiris.</div>`;
+  }
+  function portfolio() {
+    const records=SOURCE.sessions.map(s=>({s,w:wk(s.no),last:latest(s.no)}));
+    return `${heading('Portofolio mahasiswa','Ringkasan Kemajuan Belajar','Hasil kuis dan catatan berasal dari aktivitasmu sendiri di browser ini. Ekspor portofolio untuk cadangan atau pengumpulan tugas.',`<button class="btn" id="editNameTop">${ico('user')} Atur nama panggilan</button>`)}
+      <div class="notice"><b>Privasi dan penilaian:</b> website statis ini tidak memiliki akun, database, atau dashboard dosen pusat. Skor latihan belum otomatis terkirim ke SIPEJAR. Gunakan nama panggilan/kode peserta, bukan NIM, dan ekspor berkas saat diperlukan.</div>
+      <div class="stat-grid"><div class="card stat-card"><span class="stat-label">Asesmen selesai</span><div class="stat-number">${doneCount()} / 16</div><span class="stat-meta">Berdasarkan percobaan tersimpan</span></div><div class="card stat-card"><span class="stat-label">Rerata terakhir</span><div class="stat-number">${meanScore()??'—'}</div><span class="stat-meta">Skor latihan / 100</span></div><div class="card stat-card"><span class="stat-label">Refleksi tertulis</span><div class="stat-number">${records.filter(x=>x.w.note.trim()).length}</div><span class="stat-meta">Dari 16 pertemuan</span></div><div class="card stat-card"><span class="stat-label">Ketercapaian</span><div class="stat-number">${pct()}%</div><div class="progress-track"><div class="progress-fill" style="width:${pct()}%"></div></div></div></div>
+      <div class="card pad"><div class="section-header"><div><h2>Rekap pertemuan</h2><p>Tiap pertemuan memuat kuis, catatan, dan checklist</p></div></div>
+      <div class="data-table-wrap"><table class="progress-table"><thead><tr><th>No.</th><th>Materi</th><th>Status</th><th>Skor terakhir</th><th>Percobaan</th><th>Catatan</th></tr></thead><tbody>${records.map(x=>`<tr><td>${x.s.no}</td><td>${h(x.s.title)}</td><td>${x.last?'Selesai':'Belum'}</td><td>${x.last?x.last.score+'/100':'—'}</td><td>${x.w.attempts.length}</td><td>${x.w.note.trim()?'Ada':'—'}</td></tr>`).join('')}</tbody></table></div>
+      <div class="btn-row" style="margin-top:18px"><button class="btn primary" id="exportJSON">${ico('download')} Ekspor portofolio JSON</button><button class="btn light" id="exportCSV">${ico('download')} Ekspor ringkasan CSV</button><button class="btn" id="printPortfolio">Cetak ringkasan</button><button class="btn warn" id="resetAll">Hapus progres di browser</button></div>
+      <p class="help">Simpan file JSON sebagai bukti proses belajar. CSV berisi daftar skor; untuk tugas tertulis, unggah laporan analisismu secara terpisah.</p></div>`;
+  }
+  function guide() {
+    return `${heading('Informasi penggunaan','Panduan Pengajar & GitHub','Cara memanfaatkan RuangData sebagai pendamping 16 pertemuan Informetrika dan menerbitkannya melalui GitHub Pages.')}
+    <div class="grid-two"><section class="card pad"><h2>Alur penggunaan mahasiswa</h2><ol class="objective-list"><li>Buka Pertemuan 1, baca materi dan tujuan pembelajaran.</li><li>Ikuti langkah praktik menggunakan Laboratorium Data atau Kalkulator Rumus.</li><li>Isi checklist dan tulis catatan/refleksi yang relevan.</li><li>Kerjakan kuis, lalu pelajari pembahasan.</li><li>Ekspor portofolio dari halaman Portofolio Belajar sebelum pengumpulan.</li></ol></section>
+    <section class="card pad"><h2>Panduan dosen</h2><p style="color:var(--muted);font-size:12.5px">RuangData digunakan sebagai pendamping praktikum. Penugasan, presensi, nilai resmi, dan umpan balik dosen tetap dikelola melalui SIPEJAR. Sesuaikan rubrik dan data sumber dengan RPS.</p><div class="notice gold"><b>Hal penting:</b> belum ada akun, pencatatan terpusat, pengacakan soal, atau pencegahan mahasiswa saling berbagi jawaban. Website ini adalah laboratorium latihan, bukan sistem ujian berpengawasan.</div></section></div>
+    <div class="grid-two"><section class="card pad"><h2>Unggah ke GitHub Pages</h2><ol class="objective-list"><li>Buat repositori baru, misalnya <b>ruangdata-informetrika</b>.</li><li>Unggah <b>index.html, style.css, content.js, app.js</b> beserta folder <b>assets</b> dan <b>data</b> ke akar repositori.</li><li>Buka <b>Settings → Pages</b>, pilih <b>Deploy from a branch</b>, branch <b>main</b>, folder <b>/(root)</b>.</li><li>Buka alamat yang ditampilkan GitHub Pages setelah publikasi selesai.</li><li>Untuk menyesuaikan materi dan soal, edit <b>content.js</b> lalu commit perubahan.</li></ol><p class="help">Berkas preview.html dapat dibuka tanpa koneksi internet sebelum publikasi. Tidak diperlukan hosting PHP/MySQL.</p></section>
+    <section class="card pad"><h2>Perlindungan data & penelitian</h2><ul class="simple-list"><li>Dataset bawaan adalah <b>data sintetis</b>, bukan pengukuran asli mahasiswa.</li><li>File CSV lokal diproses hanya dalam browser, tanpa unggah server.</li><li>Progres tersimpan pada <b>localStorage</b>; mengganti perangkat atau menghapus cache bisa menghapus data.</li><li>Untuk penelitian efektivitas pembelajaran, siapkan instrumen, persetujuan partisipan, dan prosedur evaluasi yang terpisah.</li><li>Tampilan ini tidak menjamin validitas, reliabilitas, atau mutu nilai yang diperoleh tanpa evaluasi tambahan.</li></ul></section></div>`;
+  }
+  function render(){
+    currentRoute=current();
+    let title='Ringkasan',inner='';
+    if(currentRoute==='dashboard'){ title='Ringkasan';inner=dash(); }
+    else if(currentRoute==='pertemuan'){title='16 Pertemuan';inner=listWeeks();}
+    else if(currentRoute.startsWith('pertemuan/')){const no=Number(currentRoute.split('/')[1]);title='Pertemuan '+no;inner=sessionPage(no);}
+    else if(currentRoute==='laboratorium'){title='Laboratorium Data';inner=lab();}
+    else if(currentRoute.startsWith('kalkulator')){
+      const f=currentRoute.split('/')[1]; if(['bradford','lotka','zipf','citation'].includes(f)) formulaTab=f;
+      title='Kalkulator Rumus';inner=calc();
+    }
+    else if(currentRoute==='portofolio'){title='Portofolio Belajar';inner=portfolio();}
+    else if(currentRoute==='panduan'){title='Panduan';inner=guide();}
+    app.innerHTML=shell(inner,title);
+    document.title=`${title} | RuangData Informetrika`;
+    window.scrollTo({top:0,behavior:'instant'});
+  }
+  function csvCell(v) {
+    let t=String(v??'');
+    // Avoid accidental spreadsheet formulas when exporting strings from untrusted CSV.
+    if (/^[\s]*[=+@]/.test(t) || (/^[\s]*-/.test(t) && !/^\s*-\d+(\.\d+)?$/.test(t))) t="'"+t;
+    return '"'+t.replace(/"/g,'""')+'"';
+  }
+  function downloadFile(name,text,type) {
+    const blob=new Blob([text],{type:type||'text/plain;charset=utf-8'});
+    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+  function exportRows(rows) {
+    if(!rows.length)return '';
+    const fields=Object.keys(rows[0]);
+    return '\ufeff'+[fields.map(csvCell).join(','),...rows.map(r=>fields.map(f=>csvCell(r[f])).join(','))].join('\r\n');
+  }
+  function importCSV(text) {
+    text=String(text).replace(/^\ufeff/,'');
+    const rows=[];let current=[],field='',inQuote=false;
+    for(let i=0;i<text.length;i++){
+      const ch=text[i];
+      if(ch==='"'){if(inQuote && text[i+1]==='"'){field+='"';i++;}else inQuote=!inQuote;}
+      else if(ch===','&&!inQuote){current.push(field);field='';}
+      else if((ch==='\n'||ch==='\r')&&!inQuote){if(ch==='\r'&&text[i+1]==='\n')i++;current.push(field);field='';if(current.some(v=>v.trim()))rows.push(current);current=[];}
+      else field+=ch;
+    }
+    if(inQuote)throw Error('CSV memiliki tanda kutip yang belum ditutup.');
+    current.push(field);if(current.some(v=>v.trim()))rows.push(current);
+    if(rows.length<2)throw Error('CSV minimal memuat baris header dan satu baris data.');
+    const rawHeaders=rows.shift();
+    if(rawHeaders.length>25)throw Error('Maksimal 25 kolom untuk latihan.');
+    const headers=rawHeaders.map((x,i)=>x.trim()||'kolom_'+(i+1));
+    if(new Set(headers).size!==headers.length)throw Error('Header CSV tidak boleh memiliki nama kolom yang sama.');
+    const records=rows.slice(0,500).map(cells=>Object.fromEntries(headers.map((name,i)=>[name,String(cells[i]??'').trim()])));
+    if(!records.length)throw Error('CSV tidak memiliki baris yang dapat dibaca.');
+    return records;
+  }
+  function openNameDialog(){
+    const backdrop=document.createElement('div');backdrop.className='modal-shade';
+    backdrop.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameDialogTitle"><h2 id="nameDialogTitle">Nama panggilan</h2><p>Nama ini hanya untuk tampilan dan ekspor portofolio lokal. Gunakan kode peserta; jangan memasukkan NIM atau data pribadi sensitif.</p><label class="field-label" for="nameInput">Nama / kode</label><input style="width:100%" type="text" id="nameInput" maxlength="50" value="${h(state.name)}"><div class="btn-row" style="margin-top:18px"><button class="btn primary" id="saveName">Simpan</button><button class="btn ghost" id="closeModal">Batal</button></div></div>`;
+    document.body.append(backdrop);document.getElementById('nameInput').focus();
+  }
+  function persistParameters(){
+    const v=id=>document.getElementById(id)?.value;
+    if(formulaTab==='bradford')formulaParams.bradford=v('paramBradford')??formulaParams.bradford;
+    if(formulaTab==='lotka'){formulaParams.c=v('paramC')??formulaParams.c; formulaParams.exponent=v('paramExp')??formulaParams.exponent;}
+    if(formulaTab==='zipf')formulaParams.k=v('paramK')??formulaParams.k;
+    if(formulaTab==='citation')formulaParams.citations=v('paramCitations')??formulaParams.citations;
+  }
+  function onQuiz(no){
+    const s=byNo(no),answers=[];
+    for(let i=0;i<s.quiz.length;i++){
+      const chosen=document.querySelector(`input[name="q-${i}"]:checked`);
+      if(!chosen){ toast('Isi seluruh '+s.quiz.length+' jawaban terlebih dahulu.');return; }
+      answers.push(Number(chosen.value));
+    }
+    const correct=answers.filter((ans,i)=>ans===s.quiz[i].correct).length;
+    const score=Math.round(100*correct/s.quiz.length);
+    wk(no).attempts.push({at:new Date().toISOString(),answers,correct,score});
+    retaking.delete(no);save();render();
+    document.getElementById('quizSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+    toast(`Asesmen Pertemuan ${no} tersimpan. Skor ${score}/100.`);
+  }
+  document.addEventListener('click',async e=>{
+    const route=e.target.closest('[data-nav]'); if(route){navigate(route.dataset.nav);return;}
+    const ds=e.target.closest('[data-dataset]');if(ds){datasetId=ds.dataset.dataset;render();return;}
+    const fo=e.target.closest('[data-formula]');if(fo){persistParameters();formulaTab=fo.dataset.formula;navigate('kalkulator/'+formulaTab);return;}
+    const retake=e.target.closest('[data-retake]');if(retake){retaking.add(Number(retake.dataset.retake));render();return;}
+    const quiz=e.target.closest('[data-submit-quiz]');if(quiz){onQuiz(Number(quiz.dataset.submitQuiz));return;}
+    const menu=e.target.closest('#mobileMenu');if(menu){document.getElementById('sidebar')?.classList.toggle('show');return;}
+    if(e.target.closest('#editName')||e.target.closest('#editNameTop')){openNameDialog();return;}
+    if(e.target.closest('#closeModal')){document.querySelector('.modal-shade')?.remove();return;}
+    if(e.target.closest('#saveName')){const val=document.getElementById('nameInput').value.trim();if(!val){toast('Isi nama panggilan terlebih dahulu.');return;}state.name=val.slice(0,50);save();document.querySelector('.modal-shade')?.remove();render();return;}
+    if(e.target.closest('#applyGraph')){graphGroup=document.getElementById('graphGroup')?.value||graphGroup;graphMethod=document.getElementById('graphMethod')?.value||graphMethod;graphNumeric=document.getElementById('graphNumeric')?.value||graphNumeric;graphType=document.getElementById('graphType')?.value||graphType;render();toast('Grafik diperbarui menggunakan dataset aktif.');return;}
+    if(e.target.closest('#computeFormula')){persistParameters();const el=document.getElementById('formulaOutput');if(el)el.innerHTML=getFormulaOutput();return;}
+    if(e.target.closest('#downloadData')){const d=activeDataset();downloadFile(`${d.id}_ruangdata.csv`,exportRows(d.rows),'text/csv;charset=utf-8');toast('CSV dataset diunduh.');return;}
+    if(e.target.closest('#importCsv')){
+      const input=document.createElement('input');input.type='file';input.accept='.csv,text/csv';
+      input.addEventListener('change',async()=>{
+        const file=input.files?.[0];if(!file)return;
+        if(file.size>1024*1024){toast('Maksimal 1 MB untuk CSV latihan.');return;}
+        try {const rows=importCSV(await file.text());customDataset={id:'custom',name:file.name,description:`Data lokal (${rows.length} baris). Tidak diunggah ke server dan tidak disimpan permanen.`,category:'Impor lokal',rows};datasetId='custom';graphGroup='';graphNumeric='';graphMethod='count';render();toast('CSV berhasil dibaca secara lokal.');}
+        catch(err){toast('CSV tidak terbaca: '+err.message);}
+      });input.click();return;
+    }
+    if(e.target.closest('#exportJSON')){
+      const data={exportType:'RuangData Informetrika',exportedAt:new Date().toISOString(),course:SOURCE.course, ...state};
+      downloadFile('ruangdata-portofolio-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(data,null,2),'application/json;charset=utf-8');toast('Portofolio JSON siap disimpan.');return;
+    }
+    if(e.target.closest('#exportCSV')){
+      const records=SOURCE.sessions.map(s=>({pertemuan:s.no,materi:s.title,status:done(s.no)?'Selesai':'Belum',skor_terakhir:latest(s.no)?.score??'',percobaan:wk(s.no).attempts.length,catatan:wk(s.no).note.trim()}));
+      downloadFile('ruangdata-ringkasan-skor.csv',exportRows(records),'text/csv;charset=utf-8');toast('Rekap CSV diunduh.');return;
+    }
+    if(e.target.closest('#printPortfolio')){window.print();return;}
+    if(e.target.closest('#resetAll')){
+      if(confirm('Hapus seluruh nilai kuis, catatan, dan checklist di browser ini? Ekspor portofolio dulu jika ingin menyimpan cadangan.')){
+        state=NEW_STATE();save();render();toast('Progres lokal dikosongkan.');
+      }
+      return;
+    }
+  });
+  document.addEventListener('change',e=>{
+    const el=e.target;
+    if(el.matches('[data-step]')) {
+      const no=Number(el.dataset.week),i=Number(el.dataset.step);
+      wk(no).checked[i]=el.checked;save();
+      const label=el.closest('.step');label?.classList.toggle('checked',el.checked);
+      const section=el.closest('.card');const pill=section?.querySelector('.pill');
+      if(pill)pill.textContent=Object.values(wk(no).checked).filter(Boolean).length+'/'+byNo(no).steps.length+' langkah';
+    }
+    if(el.matches('[data-note]')){
+      const no=Number(el.dataset.note);wk(no).note=el.value.slice(0,10000);save();toast('Catatan pertemuan tersimpan di browser.');
+    }
+  });
+  window.addEventListener('hashchange',render);
+  // initial route
+  if(!location.hash) location.hash='#/dashboard';
+  render();
+})();
+
+</script>
+</body>
+</html>
